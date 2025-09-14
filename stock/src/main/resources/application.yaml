@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: stock
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/stockdb
+    username: postgres
+    password: postgres
+    pool:
+      initial-size: 3
+      min-idle: 3
+      max-size: 3
+      max-idle-time: 30m
+      max-life-time: 30m
+      validation-query: SELECT 1

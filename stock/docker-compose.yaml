@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  postgres-stock:
+    container_name: stock_postgres
+    image: postgres:17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: stockdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
