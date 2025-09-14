@@ -3,7 +3,6 @@ package com.danilo.tcc.stock.core.domain.product
 import com.danilo.tcc.stock.core.domain.AggregateId
 import com.danilo.tcc.stock.core.domain.category.CategoryId
 import org.valiktor.functions.isGreaterThan
-import org.valiktor.functions.isGreaterThanOrEqualTo
 import org.valiktor.functions.isNotBlank
 import org.valiktor.functions.isNotNull
 import org.valiktor.validate
@@ -25,7 +24,7 @@ data class Product(
             validate(Product::description).isNotBlank()
             validate(Product::imageUrl).isNotBlank()
             validate(Product::price).isNotNull().isGreaterThan(0.0)
-            validate(Product::quantity).isNotNull().isGreaterThanOrEqualTo(0)
+            validate(Product::quantity).isNotNull().isGreaterThan(0)
             validate(Product::categoryId).isNotNull()
         }
     }
@@ -65,4 +64,24 @@ data class Product(
             quantity = quantity,
             categoryId = categoryId,
         ).apply { validate() }
+
+    fun decreaseQuantity(amount: Int) =
+        this
+            .copy(
+                quantity = this.quantity - amount,
+            ).apply {
+                if (quantity < 0) {
+                    throw InsufficientProductQuantityException(
+                        productId = this.id,
+                        availableQuantity = this.quantity + amount,
+                        requestedQuantity = amount,
+                    )
+                }
+            }
+
+    fun increaseQuantity(amount: Int) =
+        this
+            .copy(
+                quantity = this.quantity + amount,
+            ).apply { validate() }
 }

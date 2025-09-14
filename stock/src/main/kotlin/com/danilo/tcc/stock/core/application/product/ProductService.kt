@@ -55,6 +55,16 @@ class ProductService(
         repository.update(updatedProduct)
     }
 
+    suspend fun decreaseQuantity(
+        id: ProductId,
+        amount: Int,
+    ) {
+        val product = repository.findById(id) ?: throw ProductNotFoundException(id)
+        val updatedProduct = product.decreaseQuantity(amount)
+
+        repository.update(updatedProduct)
+    }
+
     suspend fun delete(id: ProductId) {
         val product = repository.findById(id) ?: throw ProductNotFoundException(id)
 

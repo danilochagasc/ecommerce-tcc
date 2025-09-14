@@ -49,6 +49,13 @@ class ProductHandler(
         return ok().buildAndAwait()
     }
 
+    suspend fun decreaseQuantity(req: ServerRequest): ServerResponse {
+        val productId = ProductId(req.pathVariable("id"))
+        val amount = req.pathVariable("amount").toInt()
+        service.decreaseQuantity(productId, amount)
+        return ok().buildAndAwait()
+    }
+
     suspend fun delete(req: ServerRequest): ServerResponse {
         val categoryId = CategoryId(req.pathVariable("id"))
         service.delete(categoryId)

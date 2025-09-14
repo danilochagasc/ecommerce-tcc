@@ -13,7 +13,7 @@ class RouterConfiguration(
     private val productHandler: ProductHandler,
 ) {
     private companion object {
-        const val NUMBER_REGEX = "^\\d{6,8}\$"
+        const val NUMBER_REGEX = "\\d+"
         const val UUID_REGEX = "[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}"
     }
 
@@ -34,6 +34,7 @@ class RouterConfiguration(
                     GET("", productHandler::findAll)
                     POST("", productHandler::create)
                     PUT("/{id:$UUID_REGEX}", productHandler::update)
+                    PUT("/{id:$UUID_REGEX}/decrease/{amount:$NUMBER_REGEX}", productHandler::decreaseQuantity)
                     DELETE("/{id:$UUID_REGEX}", productHandler::delete)
                 }
             }

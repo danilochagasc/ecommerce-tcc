@@ -2,6 +2,7 @@ package com.danilo.tcc.stock.adapter.http.error
 
 import com.danilo.tcc.stock.core.domain.category.CategoryAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.category.CategoryNotFoundException
+import com.danilo.tcc.stock.core.domain.product.InsufficientProductQuantityException
 import com.danilo.tcc.stock.core.domain.product.ProductAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.product.ProductNotFoundException
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -44,6 +45,7 @@ class GlobalErrorHandler : WebExceptionHandler {
                 is CategoryAlreadyExistsException -> HttpStatus.CONFLICT to ex.message
                 is ProductNotFoundException -> HttpStatus.NOT_FOUND to ex.message
                 is ProductAlreadyExistsException -> HttpStatus.CONFLICT to ex.message
+                is InsufficientProductQuantityException -> HttpStatus.BAD_REQUEST to ex.message
                 is ConstraintViolationException -> HttpStatus.BAD_REQUEST to getConstraintViolationMessage(ex)
                 else -> HttpStatus.INTERNAL_SERVER_ERROR to "An unexpected error occurred"
             }
