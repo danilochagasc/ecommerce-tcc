@@ -5,6 +5,8 @@ interface CategoryRepository {
 
     suspend fun findAll(): List<Category>
 
+    suspend fun existsByName(name: String): Boolean
+
     suspend fun create(category: Category)
 
     suspend fun update(category: Category)

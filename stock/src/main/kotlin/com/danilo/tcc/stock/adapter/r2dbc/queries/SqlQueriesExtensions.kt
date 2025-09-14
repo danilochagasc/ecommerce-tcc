@@ -1,8 +1,6 @@
 package com.danilo.tcc.stock.adapter.r2dbc.queries
 
 import com.danilo.tcc.stock.core.domain.AggregateId
-import com.danilo.tcc.stock.core.domain.category.CategoryId
-import com.danilo.tcc.stock.core.domain.product.ProductId
 import java.time.OffsetDateTime
 import kotlin.collections.isNotEmpty
 import kotlin.collections.joinToString

@@ -5,6 +5,7 @@ import com.danilo.tcc.stock.adapter.r2dbc.queries.CategorySqlQueries.insertCateg
 import com.danilo.tcc.stock.adapter.r2dbc.queries.CategorySqlQueries.selectCategory
 import com.danilo.tcc.stock.adapter.r2dbc.queries.CategorySqlQueries.updateCategory
 import com.danilo.tcc.stock.adapter.r2dbc.queries.CategorySqlQueries.whereId
+import com.danilo.tcc.stock.adapter.r2dbc.queries.CategorySqlQueries.whereName
 import com.danilo.tcc.stock.core.domain.category.Category
 import com.danilo.tcc.stock.core.domain.category.CategoryId
 import com.danilo.tcc.stock.core.domain.category.CategoryRepository
@@ -41,6 +42,17 @@ class CategoryR2dbcRepository(
                     .map { row, _ -> row.toCategory() }
                     .flow()
                     .toList()
+            }
+
+    override suspend fun existsByName(name: String): Boolean =
+        selectCategory()
+            .where(whereName(name))
+            .run {
+                db
+                    .sql(this)
+                    .bind("name", name)
+                    .map { row, _ -> row.toCategory() }
+                    .awaitOneOrNull() != null
             }
 
     override suspend fun create(category: Category) {

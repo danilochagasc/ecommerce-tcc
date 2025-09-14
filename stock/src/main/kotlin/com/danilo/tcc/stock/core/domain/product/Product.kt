@@ -2,6 +2,7 @@ package com.danilo.tcc.stock.core.domain.product
 
 import com.danilo.tcc.stock.core.domain.AggregateId
 import com.danilo.tcc.stock.core.domain.category.CategoryId
+import org.valiktor.functions.isGreaterThan
 import org.valiktor.functions.isGreaterThanOrEqualTo
 import org.valiktor.functions.isNotBlank
 import org.valiktor.functions.isNotNull
@@ -23,7 +24,7 @@ data class Product(
             validate(Product::name).isNotBlank()
             validate(Product::description).isNotBlank()
             validate(Product::imageUrl).isNotBlank()
-            validate(Product::price).isNotNull().isGreaterThanOrEqualTo(0.0)
+            validate(Product::price).isNotNull().isGreaterThan(0.0)
             validate(Product::quantity).isNotNull().isGreaterThanOrEqualTo(0)
             validate(Product::categoryId).isNotNull()
         }

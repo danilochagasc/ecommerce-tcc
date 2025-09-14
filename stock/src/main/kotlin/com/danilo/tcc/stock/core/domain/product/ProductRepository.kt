@@ -5,6 +5,8 @@ interface ProductRepository {
 
     suspend fun findAll(): List<Product>
 
+    suspend fun existsByName(name: String): Boolean
+
     suspend fun create(product: Product)
 
     suspend fun update(product: Product)

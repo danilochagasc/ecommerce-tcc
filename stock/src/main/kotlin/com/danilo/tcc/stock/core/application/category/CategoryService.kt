@@ -3,6 +3,7 @@ package com.danilo.tcc.stock.core.application.category
 import com.danilo.tcc.stock.core.application.category.command.CreateCategoryCommand
 import com.danilo.tcc.stock.core.application.category.command.UpdateCategoryCommand
 import com.danilo.tcc.stock.core.domain.category.Category
+import com.danilo.tcc.stock.core.domain.category.CategoryAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.category.CategoryId
 import com.danilo.tcc.stock.core.domain.category.CategoryNotFoundException
 import com.danilo.tcc.stock.core.domain.category.CategoryRepository
@@ -17,6 +18,12 @@ class CategoryService(
     suspend fun findAll(): List<Category> = repository.findAll()
 
     suspend fun create(command: CreateCategoryCommand): CategoryId {
+        repository.existsByName(command.name).let { exists ->
+            if (exists) {
+                throw CategoryAlreadyExistsException(command.name)
+            }
+        }
+
         val category =
             Category.create(
                 name = command.name,

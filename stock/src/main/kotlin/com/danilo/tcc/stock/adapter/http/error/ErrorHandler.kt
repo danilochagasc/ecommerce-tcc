@@ -1,14 +1,16 @@
 package com.danilo.tcc.stock.adapter.http.error
 
+import com.danilo.tcc.stock.core.domain.category.CategoryAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.category.CategoryNotFoundException
+import com.danilo.tcc.stock.core.domain.product.ProductAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.product.ProductNotFoundException
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.reactor.mono
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebExceptionHandler
@@ -26,7 +28,6 @@ data class ErrorResponse(
 @Component
 @Order(-2)
 class GlobalErrorHandler : WebExceptionHandler {
-
     private companion object {
         val LOGGER = KotlinLogging.logger { }
     }
@@ -35,13 +36,14 @@ class GlobalErrorHandler : WebExceptionHandler {
         exchange: ServerWebExchange,
         ex: Throwable,
     ): Mono<Void> {
-
         LOGGER.error(ex) { "An error occurred while processing the request: ${ex.message}" }
 
         val (status, message) =
             when (ex) {
                 is CategoryNotFoundException -> HttpStatus.NOT_FOUND to ex.message
+                is CategoryAlreadyExistsException -> HttpStatus.CONFLICT to ex.message
                 is ProductNotFoundException -> HttpStatus.NOT_FOUND to ex.message
+                is ProductAlreadyExistsException -> HttpStatus.CONFLICT to ex.message
                 is ConstraintViolationException -> HttpStatus.BAD_REQUEST to getConstraintViolationMessage(ex)
                 else -> HttpStatus.INTERNAL_SERVER_ERROR to "An unexpected error occurred"
             }
