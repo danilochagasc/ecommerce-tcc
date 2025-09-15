@@ -54,6 +54,10 @@ dependencies {
     //miscellaneous
     implementation(libs.kotlin.reflect)
 
+    //aws sdk
+    implementation(platform(libs.aws.sdk.bom))
+    implementation(libs.aws.sdk.s3)
+
     //testing
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotest.runner.junit5)

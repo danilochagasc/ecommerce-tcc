@@ -5,6 +5,7 @@ import com.danilo.tcc.stock.core.application.product.command.UpdateProductComman
 import com.danilo.tcc.stock.core.domain.product.Product
 import com.danilo.tcc.stock.core.domain.product.ProductAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.product.ProductId
+import com.danilo.tcc.stock.core.domain.product.ProductImageRepository
 import com.danilo.tcc.stock.core.domain.product.ProductNotFoundException
 import com.danilo.tcc.stock.core.domain.product.ProductRepository
 import org.springframework.stereotype.Service
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class ProductService(
     private val repository: ProductRepository,
+    private val imageRepository: ProductImageRepository,
 ) {
     suspend fun findById(id: ProductId): Product = repository.findById(id) ?: throw ProductNotFoundException(id)
 
@@ -37,6 +39,26 @@ class ProductService(
         repository.create(product)
 
         return product.id
+    }
+
+    suspend fun uploadImage(
+        productId: ProductId,
+        bytes: ByteArray,
+        fileName: String,
+    ) {
+        val imageUrl = imageRepository.uploadImage(productId, bytes, fileName, null)
+
+        val product = repository.findById(productId) ?: throw ProductNotFoundException(productId)
+        val updatedProduct =
+            product.update(
+                name = product.name,
+                description = product.description,
+                imageUrl = imageUrl,
+                price = product.price,
+                quantity = product.quantity,
+                categoryId = product.categoryId,
+            )
+        repository.update(updatedProduct)
     }
 
     suspend fun update(command: UpdateProductCommand) {

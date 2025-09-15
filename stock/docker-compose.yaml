@@ -5,9 +5,19 @@ services:
     container_name: stock_postgres
     image: postgres:17
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_DB: stockdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     restart: always
+
+  localstack:
+    container_name: localstack
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566" # LocalStack Gateway
+    environment:
+        - SERVICES=s3
+        - DEBUG=1
+        - DATA_DIR=/tmp/localstack/data

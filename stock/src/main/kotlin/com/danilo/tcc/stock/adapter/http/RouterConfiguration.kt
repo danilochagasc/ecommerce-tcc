@@ -33,6 +33,7 @@ class RouterConfiguration(
                     GET("/{id:$UUID_REGEX}", productHandler::findById)
                     GET("", productHandler::findAll)
                     POST("", productHandler::create)
+                    POST("/{id:$UUID_REGEX}/image", productHandler::uploadImage)
                     PUT("/{id:$UUID_REGEX}", productHandler::update)
                     PUT("/{id:$UUID_REGEX}/decrease/{amount:$NUMBER_REGEX}", productHandler::decreaseQuantity)
                     DELETE("/{id:$UUID_REGEX}", productHandler::delete)

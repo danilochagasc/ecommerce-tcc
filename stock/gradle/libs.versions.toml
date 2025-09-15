@@ -13,6 +13,7 @@ kotest-extensions = "1.1.2"
 mockk = "1.14.2"
 jdbc-postgresql = "42.7.7"
 flyway = "10.20.0"
+aws-sdk-bom = "2.23.17"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -43,3 +44,5 @@ r2dbc-postgresql-driver = { module = "org.postgresql:r2dbc-postgresql" }
 jdbc-postgresql = {module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql"}
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+aws-sdk-bom = { module = "software.amazon.awssdk:bom", version.ref = "aws-sdk-bom" }
+aws-sdk-s3 = { module = "software.amazon.awssdk:s3" }

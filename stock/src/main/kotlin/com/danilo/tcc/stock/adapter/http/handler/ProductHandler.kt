@@ -6,6 +6,8 @@ import com.danilo.tcc.stock.core.application.product.command.CreateProductComman
 import com.danilo.tcc.stock.core.application.product.command.UpdateProductCommand
 import com.danilo.tcc.stock.core.domain.category.CategoryId
 import com.danilo.tcc.stock.core.domain.product.ProductId
+import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -13,6 +15,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.created
 import org.springframework.web.reactive.function.server.ServerResponse.noContent
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.reactive.function.server.awaitBody
+import org.springframework.web.reactive.function.server.awaitMultipartData
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 
@@ -46,6 +49,26 @@ class ProductHandler(
                 categoryId = command.categoryId,
             ),
         )
+        return ok().buildAndAwait()
+    }
+
+    suspend fun uploadImage(req: ServerRequest): ServerResponse {
+        val productId = ProductId(req.pathVariable("id"))
+
+        val multipartData = req.awaitMultipartData()
+        val filePart =
+            multipartData.toSingleValueMap()["file"] as? FilePart
+                ?: return ServerResponse.badRequest().bodyValueAndAwait("File part is missing")
+
+        val fileName = filePart.filename()
+        val bytes =
+            filePart
+                .content()
+                .map { dataBuffer -> dataBuffer.asInputStream().readBytes() }
+                .reduce(ByteArray::plus)
+                .awaitSingle()
+
+        service.uploadImage(productId, bytes, fileName)
         return ok().buildAndAwait()
     }
 
