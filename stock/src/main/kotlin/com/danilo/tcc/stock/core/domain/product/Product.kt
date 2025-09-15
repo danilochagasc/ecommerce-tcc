@@ -22,7 +22,7 @@ data class Product(
         validate(this) {
             validate(Product::name).isNotBlank()
             validate(Product::description).isNotBlank()
-            validate(Product::imageUrl).isNotBlank()
+            validate(Product::imageUrl).isNotNull()
             validate(Product::price).isNotNull().isGreaterThan(0.0)
             validate(Product::quantity).isNotNull().isGreaterThan(0)
             validate(Product::categoryId).isNotNull()
@@ -51,7 +51,6 @@ data class Product(
     fun update(
         name: String,
         description: String,
-        imageUrl: String,
         price: Double,
         quantity: Int,
         categoryId: CategoryId,
@@ -59,11 +58,16 @@ data class Product(
         .copy(
             name = name,
             description = description,
-            imageUrl = imageUrl,
             price = price,
             quantity = quantity,
             categoryId = categoryId,
         ).apply { validate() }
+
+    fun changeImage(imageUrl: String) =
+        this
+            .copy(
+                imageUrl = imageUrl,
+            ).apply { validate() }
 
     fun decreaseQuantity(amount: Int) =
         this

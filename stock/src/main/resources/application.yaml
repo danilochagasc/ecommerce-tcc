@@ -15,11 +15,8 @@ spring:
 
 aws:
   s3:
-    bucket: product-images-bucket
     region: us-east-1
-    endpoint: http://localhost:4566
-    secret-access-key: test
-    access-key-id: test
+    bucket: product-images-bucket
     endpoint-override:
       enabled: true
       url: http://localhost:4566
@@ -27,6 +24,6 @@ aws:
     netty-nio-properties:
       write-timeout: 0
       max-concurrency: 1000
-      max-pending-connections-acquires: 10000
-      connect-timeout: 30
+      max-pending-connection-acquires: 10000
+      connection-timeout: 30
       connection-acquisition-timeout: 10s

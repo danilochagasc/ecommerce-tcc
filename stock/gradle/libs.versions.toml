@@ -46,3 +46,4 @@ flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", versio
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
 aws-sdk-bom = { module = "software.amazon.awssdk:bom", version.ref = "aws-sdk-bom" }
 aws-sdk-s3 = { module = "software.amazon.awssdk:s3" }
+aws-sdk-netty-client = { module = "software.amazon.awssdk:netty-nio-client" }

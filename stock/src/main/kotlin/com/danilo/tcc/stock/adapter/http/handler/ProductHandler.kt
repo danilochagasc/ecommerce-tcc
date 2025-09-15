@@ -3,6 +3,7 @@ package com.danilo.tcc.stock.adapter.http.handler
 import com.danilo.tcc.stock.adapter.http.request.UpdateProductRequest
 import com.danilo.tcc.stock.core.application.product.ProductService
 import com.danilo.tcc.stock.core.application.product.command.CreateProductCommand
+import com.danilo.tcc.stock.core.application.product.command.DecreaseQuantityCommand
 import com.danilo.tcc.stock.core.application.product.command.UpdateProductCommand
 import com.danilo.tcc.stock.core.domain.category.CategoryId
 import com.danilo.tcc.stock.core.domain.product.ProductId
@@ -43,7 +44,6 @@ class ProductHandler(
                 id = ProductId(req.pathVariable("id")),
                 name = command.name,
                 description = command.description,
-                imageUrl = command.imageUrl,
                 price = command.price,
                 quantity = command.quantity,
                 categoryId = command.categoryId,
@@ -61,6 +61,7 @@ class ProductHandler(
                 ?: return ServerResponse.badRequest().bodyValueAndAwait("File part is missing")
 
         val fileName = filePart.filename()
+        val contentType = filePart.headers().contentType?.toString()
         val bytes =
             filePart
                 .content()
@@ -68,14 +69,17 @@ class ProductHandler(
                 .reduce(ByteArray::plus)
                 .awaitSingle()
 
-        service.uploadImage(productId, bytes, fileName)
+        service.uploadImage(productId, bytes, fileName, contentType)
         return ok().buildAndAwait()
     }
 
     suspend fun decreaseQuantity(req: ServerRequest): ServerResponse {
-        val productId = ProductId(req.pathVariable("id"))
-        val amount = req.pathVariable("amount").toInt()
-        service.decreaseQuantity(productId, amount)
+        val command =
+            DecreaseQuantityCommand(
+                productId = ProductId(req.pathVariable("id")),
+                amount = req.pathVariable("amount").toInt(),
+            )
+        service.decreaseQuantity(command)
         return ok().buildAndAwait()
     }
 

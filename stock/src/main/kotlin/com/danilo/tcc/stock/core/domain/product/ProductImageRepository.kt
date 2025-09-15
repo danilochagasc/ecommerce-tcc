@@ -1,7 +1,7 @@
 package com.danilo.tcc.stock.core.domain.product
 
 interface ProductImageRepository {
-    fun uploadImage(
+    suspend fun uploadImage(
         productId: ProductId,
         file: ByteArray,
         fileName: String,

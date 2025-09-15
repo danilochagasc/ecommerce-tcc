@@ -1,15 +1,12 @@
 package com.danilo.tcc.stock.adapter.aws.s3
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import kotlin.time.Duration
+import java.time.Duration
 
 @ConfigurationProperties(prefix = "aws.s3")
 data class S3Properties(
-    val bucket: String,
     val region: String,
-    val endpoint: String,
-    val accessKeyId: String,
-    val secretAccessKey: String,
+    val bucket: String,
     val endpointOverride: S3EndpointOverride,
     val nettyNioProperties: NettyNioProperties,
 )

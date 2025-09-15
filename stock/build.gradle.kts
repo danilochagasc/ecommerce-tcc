@@ -57,6 +57,7 @@ dependencies {
     //aws sdk
     implementation(platform(libs.aws.sdk.bom))
     implementation(libs.aws.sdk.s3)
+    implementation(libs.aws.sdk.netty.client)
 
     //testing
     testImplementation(libs.spring.boot.starter.test)

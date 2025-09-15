@@ -1,6 +1,7 @@
 package com.danilo.tcc.stock.core.application.product
 
 import com.danilo.tcc.stock.core.application.product.command.CreateProductCommand
+import com.danilo.tcc.stock.core.application.product.command.DecreaseQuantityCommand
 import com.danilo.tcc.stock.core.application.product.command.UpdateProductCommand
 import com.danilo.tcc.stock.core.domain.product.Product
 import com.danilo.tcc.stock.core.domain.product.ProductAlreadyExistsException
@@ -30,7 +31,7 @@ class ProductService(
             Product.create(
                 name = command.name,
                 description = command.description,
-                imageUrl = command.imageUrl,
+                imageUrl = "",
                 price = command.price,
                 quantity = command.quantity,
                 categoryId = command.categoryId,
@@ -45,19 +46,12 @@ class ProductService(
         productId: ProductId,
         bytes: ByteArray,
         fileName: String,
+        contentType: String?,
     ) {
-        val imageUrl = imageRepository.uploadImage(productId, bytes, fileName, null)
+        val imageUrl = imageRepository.uploadImage(productId, bytes, fileName, contentType)
 
         val product = repository.findById(productId) ?: throw ProductNotFoundException(productId)
-        val updatedProduct =
-            product.update(
-                name = product.name,
-                description = product.description,
-                imageUrl = imageUrl,
-                price = product.price,
-                quantity = product.quantity,
-                categoryId = product.categoryId,
-            )
+        val updatedProduct = product.changeImage(imageUrl)
         repository.update(updatedProduct)
     }
 
@@ -68,7 +62,6 @@ class ProductService(
             product.update(
                 name = command.name,
                 description = command.description,
-                imageUrl = command.imageUrl,
                 price = command.price,
                 quantity = command.quantity,
                 categoryId = command.categoryId,
@@ -77,12 +70,9 @@ class ProductService(
         repository.update(updatedProduct)
     }
 
-    suspend fun decreaseQuantity(
-        id: ProductId,
-        amount: Int,
-    ) {
-        val product = repository.findById(id) ?: throw ProductNotFoundException(id)
-        val updatedProduct = product.decreaseQuantity(amount)
+    suspend fun decreaseQuantity(command: DecreaseQuantityCommand) {
+        val product = repository.findById(command.productId) ?: throw ProductNotFoundException(command.productId)
+        val updatedProduct = product.decreaseQuantity(command.amount)
 
         repository.update(updatedProduct)
     }
