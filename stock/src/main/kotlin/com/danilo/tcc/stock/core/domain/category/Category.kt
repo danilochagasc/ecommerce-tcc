@@ -11,6 +11,11 @@ data class Category(
     val id: CategoryId,
     val name: String,
 ) {
+
+    init{
+        validate()
+    }
+
     private fun validate() {
         validate(this) {
             validate(Category::name).isNotBlank()
@@ -22,14 +27,12 @@ data class Category(
             Category(
                 id = CategoryId(UUID.randomUUID()),
                 name = name,
-            ).apply {
-                validate()
-            }
+            )
     }
 
     fun update(name: String): Category =
         this
             .copy(
                 name = name,
-            ).apply { validate() }
+            )
 }
