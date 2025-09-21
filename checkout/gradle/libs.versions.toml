@@ -1,5 +1,5 @@
 [versions]
-compiler-kotlin = "2.0"
+compiler-kotlin = "2.1"
 compiler-java = "17"
 kotlin = "2.0.21"
 kotlinter = "4.4.1"
@@ -37,3 +37,4 @@ kotest-extensions-spring = {module = "io.kotest.extensions:kotest-extensions-spr
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 mockk = {module = "io.mockk:mockk", version.ref = "mockk"}
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+redis-reactive = { module = "org.springframework.boot:spring-boot-starter-data-redis-reactive" }

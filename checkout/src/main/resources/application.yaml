@@ -1,3 +1,9 @@
 spring:
   application:
     name: checkout
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      repositories:
+          enabled: false

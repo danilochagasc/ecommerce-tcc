@@ -42,7 +42,7 @@ dependencies {
     implementation(libs.kotlin.logging)
 
     //database
-
+    implementation(libs.redis.reactive)
 
     //miscellaneous
     implementation(libs.kotlin.reflect)
