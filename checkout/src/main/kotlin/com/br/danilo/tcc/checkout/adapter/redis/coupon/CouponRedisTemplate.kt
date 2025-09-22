@@ -15,7 +15,7 @@ fun CouponRedisTemplate.toDomain() =
         code = code,
         discountType = enumValueOf(discountType),
         value = value,
-        expiresAt = Instant.parse(expiresAt)
+        expiresAt = Instant.parse(expiresAt),
     )
 
 fun Coupon.toRedisTemplate() =
@@ -23,5 +23,5 @@ fun Coupon.toRedisTemplate() =
         code = code,
         discountType = discountType.name,
         value = value,
-        expiresAt = expiresAt.toString()
+        expiresAt = expiresAt.toString(),
     )

@@ -29,14 +29,15 @@ class CouponHandler(
 
     suspend fun create(req: ServerRequest): ServerResponse {
         val request = req.awaitBody<CreateCouponRequest>()
-        val code = service.create(
-            CreateCouponCommand(
-                code = request.code.uppercase(),
-                discountType = request.discountType,
-                value = request.value,
-                expiresAt = Instant.parse(request.expiresAt),
+        val code =
+            service.create(
+                CreateCouponCommand(
+                    code = request.code.uppercase(),
+                    discountType = request.discountType,
+                    value = request.value,
+                    expiresAt = Instant.parse(request.expiresAt),
+                ),
             )
-        )
         return created(req.uriBuilder().path("/{code}").build(code)).buildAndAwait()
     }
 

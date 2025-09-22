@@ -2,6 +2,7 @@ package com.br.danilo.tcc.checkout.core.application.coupon
 
 import com.br.danilo.tcc.checkout.core.application.coupon.command.CreateCouponCommand
 import com.br.danilo.tcc.checkout.core.application.coupon.command.UpdateCouponCommand
+import com.br.danilo.tcc.checkout.core.application.coupon.query.toQuery
 import com.br.danilo.tcc.checkout.core.domain.coupon.Coupon
 import com.br.danilo.tcc.checkout.core.domain.coupon.CouponAlreadyExistsException
 import com.br.danilo.tcc.checkout.core.domain.coupon.CouponNotFoundException
@@ -12,9 +13,9 @@ import org.springframework.stereotype.Service
 class CouponService(
     private val repository: CouponRepository,
 ) {
-    suspend fun findAll(): List<Coupon> = repository.findAll()
+    suspend fun findAll() = repository.findAll().map { it.toQuery() }
 
-    suspend fun findByCode(code: String): Coupon = returnCouponIfExists(code)
+    suspend fun findByCode(code: String) = returnCouponIfExists(code).toQuery()
 
     suspend fun create(command: CreateCouponCommand): String {
         repository.findByCode(command.code)?.let {
@@ -33,13 +34,14 @@ class CouponService(
         return coupon.code
     }
 
-    suspend fun update(command: UpdateCouponCommand){
+    suspend fun update(command: UpdateCouponCommand) {
         val existingCoupon = returnCouponIfExists(command.code)
-        val updatedCoupon = existingCoupon.update(
-            discountType = command.discountType,
-            value = command.value,
-            expiresAt = command.expiresAt,
-        )
+        val updatedCoupon =
+            existingCoupon.update(
+                discountType = command.discountType,
+                value = command.value,
+                expiresAt = command.expiresAt,
+            )
         repository.createOrUpdate(updatedCoupon)
     }
 
@@ -48,5 +50,5 @@ class CouponService(
         repository.delete(code)
     }
 
-    private suspend fun returnCouponIfExists(code: String) = repository.findByCode(code) ?: throw CouponNotFoundException(code)
+    suspend fun returnCouponIfExists(code: String) = repository.findByCode(code) ?: throw CouponNotFoundException(code)
 }

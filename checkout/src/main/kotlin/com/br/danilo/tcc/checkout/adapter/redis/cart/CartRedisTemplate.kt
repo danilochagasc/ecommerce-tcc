@@ -7,7 +7,6 @@ import com.br.danilo.tcc.checkout.core.domain.cart.Cart
 import com.br.danilo.tcc.checkout.core.domain.cart.CartId
 import com.br.danilo.tcc.checkout.core.domain.cart.CartItem
 
-
 data class CartRedisTemplate(
     val id: CartId,
     val items: List<CartItem>,
@@ -18,12 +17,12 @@ fun CartRedisTemplate.toDomain() =
     Cart(
         id = id,
         items = items,
-        coupon = coupon?.toDomain()
+        coupon = coupon?.toDomain(),
     )
 
 fun Cart.toRedisTemplate() =
     CartRedisTemplate(
         id = id,
         items = items,
-        coupon = coupon?.toRedisTemplate()
+        coupon = coupon?.toRedisTemplate(),
     )

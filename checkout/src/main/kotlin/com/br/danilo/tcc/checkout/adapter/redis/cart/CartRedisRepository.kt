@@ -20,9 +20,12 @@ class CartRedisRepository(
     private fun key(cartId: CartId) = "cart:$cartId"
 
     override suspend fun findById(cartId: CartId): Cart? =
-        operations.get(key(cartId)).awaitSingleOrNull()?.let {
-            objectMapper.readValue(it, CartRedisTemplate::class.java)
-        }?.toDomain()
+        operations
+            .get(key(cartId))
+            .awaitSingleOrNull()
+            ?.let {
+                objectMapper.readValue(it, CartRedisTemplate::class.java)
+            }?.toDomain()
 
     override suspend fun createOrUpdate(cart: Cart): Cart {
         operations

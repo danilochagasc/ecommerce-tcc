@@ -32,9 +32,15 @@ class RouterConfiguration(
                 "/cart".nest {
                     GET("/{id:$UUID_REGEX}", cartHandler::findById)
                     POST("/{id:$UUID_REGEX}", cartHandler::addItem)
-                    PUT("/{cartId:$UUID_REGEX}/item/{productId:$UUID_REGEX}/increase/{quantity:$NUMBER_REGEX}", cartHandler::increaseItemQuantity)
+                    PUT(
+                        "/{cartId:$UUID_REGEX}/item/{productId:$UUID_REGEX}/increase/{quantity:$NUMBER_REGEX}",
+                        cartHandler::increaseItemQuantity,
+                    )
                     DELETE("/{cartId:$UUID_REGEX}/item/{productId:$UUID_REGEX}", cartHandler::removeItem)
-                    PUT("/{cartId:$UUID_REGEX}/item/{productId:$UUID_REGEX}/decrease/{quantity:$NUMBER_REGEX}", cartHandler::decreaseItemQuantity)
+                    PUT(
+                        "/{cartId:$UUID_REGEX}/item/{productId:$UUID_REGEX}/decrease/{quantity:$NUMBER_REGEX}",
+                        cartHandler::decreaseItemQuantity,
+                    )
                     PUT("/{id:$UUID_REGEX}/coupon/{code}", cartHandler::applyCoupon)
                     DELETE("/{id:$UUID_REGEX}/coupon", cartHandler::removeCoupon)
                     DELETE("/{id:$UUID_REGEX}", cartHandler::delete)

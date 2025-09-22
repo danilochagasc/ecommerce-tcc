@@ -24,14 +24,17 @@ class CouponRedisRepository(
             .scan()
             .filter { it.startsWith("coupon:") }
             .flatMap { key -> operations.get(key) }
-            .map { json -> objectMapper.readValue(json, CouponRedisTemplate::class.java).toDomain()}
+            .map { json -> objectMapper.readValue(json, CouponRedisTemplate::class.java).toDomain() }
             .collectList()
             .awaitSingle()
 
     override suspend fun findByCode(code: String): Coupon? =
-        operations.get(key(code)).awaitSingleOrNull()?.let {
-            objectMapper.readValue(it, CouponRedisTemplate::class.java)
-        }?.toDomain()
+        operations
+            .get(key(code))
+            .awaitSingleOrNull()
+            ?.let {
+                objectMapper.readValue(it, CouponRedisTemplate::class.java)
+            }?.toDomain()
 
     override suspend fun createOrUpdate(coupon: Coupon): Coupon {
         operations

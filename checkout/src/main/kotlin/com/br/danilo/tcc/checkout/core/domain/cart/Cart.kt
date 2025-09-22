@@ -2,7 +2,6 @@ package com.br.danilo.tcc.checkout.core.domain.cart
 
 import com.br.danilo.tcc.checkout.core.domain.AggregateId
 import com.br.danilo.tcc.checkout.core.domain.coupon.Coupon
-import org.valiktor.functions.isNotEmpty
 import org.valiktor.functions.isNotNull
 import org.valiktor.validate
 
@@ -13,7 +12,6 @@ data class Cart(
     val items: List<CartItem>,
     val coupon: Coupon?,
 ) {
-
     init {
         validate()
     }
@@ -26,16 +24,20 @@ data class Cart(
     }
 
     companion object {
-        fun create(
-            id: CartId,
-        ) = Cart(
-            id = id,
-            items = emptyList(),
-            coupon = null,
-        )
+        fun create(id: CartId) =
+            Cart(
+                id = id,
+                items = emptyList(),
+                coupon = null,
+            )
     }
 
-    fun addItem(productId: ProductId, name: String, price: Double, quantity: Int = 1): Cart {
+    fun addItem(
+        productId: ProductId,
+        name: String,
+        price: Double,
+        quantity: Int = 1,
+    ): Cart {
         val updatedItems = items.toMutableList()
         val existing = updatedItems.find { it.productId == productId }
 
@@ -46,7 +48,10 @@ data class Cart(
         return copy(items = updatedItems)
     }
 
-    fun increaseItemQuantity(productId: ProductId, quantity: Int = 1): Cart{
+    fun increaseItemQuantity(
+        productId: ProductId,
+        quantity: Int = 1,
+    ): Cart {
         val updatedItems = items.toMutableList()
         val existing = updatedItems.find { it.productId == productId }
 
@@ -57,7 +62,7 @@ data class Cart(
         return copy(items = updatedItems)
     }
 
-    fun removeItem(productId: ProductId): Cart{
+    fun removeItem(productId: ProductId): Cart {
         val updatedItems = items.toMutableList()
         val existing = updatedItems.find { it.productId == productId }
 
@@ -67,7 +72,10 @@ data class Cart(
         return copy(items = updatedItems)
     }
 
-    fun decreaseItemQuantity(productId: ProductId, quantity: Int = 1): Cart {
+    fun decreaseItemQuantity(
+        productId: ProductId,
+        quantity: Int = 1,
+    ): Cart {
         val updatedItems = items.toMutableList()
         val existing = updatedItems.find { it.productId == productId }
 
@@ -82,7 +90,6 @@ data class Cart(
 
         return copy(items = updatedItems)
     }
-
 
     fun applyCoupon(coupon: Coupon): Cart = copy(coupon = coupon)
 

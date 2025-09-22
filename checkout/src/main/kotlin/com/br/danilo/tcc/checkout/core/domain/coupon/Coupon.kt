@@ -11,7 +11,6 @@ import org.valiktor.validate
 import kotlin.time.Clock.System.now
 import kotlin.time.Instant
 
-
 data class Coupon(
     val code: String,
     val discountType: DiscountType,
