@@ -88,6 +88,8 @@ data class Cart(
 
     fun removeCoupon(): Cart = copy(coupon = null)
 
+    fun isEmpty() = items.isEmpty()
+
     fun total(): Double {
         val subtotal = items.sumOf { it.price * it.quantity }
         return coupon?.applyDiscount(subtotal) ?: subtotal

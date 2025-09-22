@@ -3,6 +3,7 @@ package com.danilo.tcc.stock.core.application.product
 import com.danilo.tcc.stock.core.application.product.command.CreateProductCommand
 import com.danilo.tcc.stock.core.application.product.command.DecreaseQuantityCommand
 import com.danilo.tcc.stock.core.application.product.command.UpdateProductCommand
+import com.danilo.tcc.stock.core.application.product.query.toQuery
 import com.danilo.tcc.stock.core.domain.product.Product
 import com.danilo.tcc.stock.core.domain.product.ProductAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.product.ProductId
@@ -16,9 +17,10 @@ class ProductService(
     private val repository: ProductRepository,
     private val imageRepository: ProductImageRepository,
 ) {
-    suspend fun findById(id: ProductId): Product = repository.findById(id) ?: throw ProductNotFoundException(id)
+    suspend fun findById(id: ProductId) = repository.findById(id)?.toQuery()
+        ?: throw ProductNotFoundException(id)
 
-    suspend fun findAll(): List<Product> = repository.findAll()
+    suspend fun findAll() = repository.findAll().map { it.toQuery() }
 
     suspend fun create(command: CreateProductCommand): ProductId {
         repository.existsByName(command.name).let { exists ->

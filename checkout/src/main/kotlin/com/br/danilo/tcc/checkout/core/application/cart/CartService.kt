@@ -41,7 +41,9 @@ class CartService(
     suspend fun removeItem(command: RemoveCartItemCommand){
         val cart = returnCartIfExists(command.cartId)
         val updated = cart.removeItem(command.productId)
-        repository.createOrUpdate(updated)
+        updated.isEmpty().let {
+            if (it) delete(command.productId) else repository.createOrUpdate(updated)
+        }
     }
 
     suspend fun decreaseItemQuantity(command: IncreaseOrDecreaseItemCommand) {
@@ -50,7 +52,9 @@ class CartService(
             productId = command.productId,
             quantity = command.quantity
         )
-        repository.createOrUpdate(updated)
+        updated.isEmpty().let {
+            if (it) delete(command.productId) else repository.createOrUpdate(updated)
+        }
     }
 
     suspend fun applyCoupon(command: ApplyCouponCommand) {

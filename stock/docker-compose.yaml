@@ -21,3 +21,5 @@ services:
         - SERVICES=s3
         - DEBUG=1
         - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "./scripts/localstack:/etc/localstack/init/ready.d"

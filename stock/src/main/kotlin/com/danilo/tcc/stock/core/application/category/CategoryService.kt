@@ -8,14 +8,16 @@ import com.danilo.tcc.stock.core.domain.category.CategoryId
 import com.danilo.tcc.stock.core.domain.category.CategoryNotFoundException
 import com.danilo.tcc.stock.core.domain.category.CategoryRepository
 import org.springframework.stereotype.Service
+import com.danilo.tcc.stock.core.application.category.query.toQuery
 
 @Service
 class CategoryService(
     private val repository: CategoryRepository,
 ) {
-    suspend fun findById(id: CategoryId): Category = repository.findById(id) ?: throw CategoryNotFoundException(id)
+    suspend fun findById(id: CategoryId) = repository.findById(id)?.toQuery()
+        ?: throw CategoryNotFoundException(id)
 
-    suspend fun findAll(): List<Category> = repository.findAll()
+    suspend fun findAll() = repository.findAll().map { it.toQuery() }
 
     suspend fun create(command: CreateCategoryCommand): CategoryId {
         repository.existsByName(command.name).let { exists ->
