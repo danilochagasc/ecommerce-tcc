@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: account
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/accountdb
+    username: postgres
+    password: postgres
+    pool:
+      initial-size: 3
+      min-idle: 3
+      max-size: 3
+      max-idle-time: 30m
+      max-life-time: 30m
+      validation-query: SELECT 1
+
+
+security:
+  jwt:
+    secret-key: "${JWT_SECRET:change_this_to_a_long_secret_key_very_secure}"
+    access-token-expiration: 3600000 # 1 hour in milliseconds
+    refresh-token-expiration: 604800000 # 7 days in milliseconds

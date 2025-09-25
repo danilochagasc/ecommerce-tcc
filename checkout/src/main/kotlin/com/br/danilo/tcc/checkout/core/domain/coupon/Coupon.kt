@@ -1,8 +1,7 @@
 package com.br.danilo.tcc.checkout.core.domain.coupon
 
-import com.br.danilo.tcc.checkout.core.domain.cart.DiscountType
-import com.br.danilo.tcc.checkout.core.domain.cart.DiscountType.FIXED
-import com.br.danilo.tcc.checkout.core.domain.cart.DiscountType.PERCENTAGE
+import com.br.danilo.tcc.checkout.core.domain.coupon.DiscountType.FIXED
+import com.br.danilo.tcc.checkout.core.domain.coupon.DiscountType.PERCENTAGE
 import org.valiktor.functions.isGreaterThan
 import org.valiktor.functions.isLessThanOrEqualTo
 import org.valiktor.functions.isNotEmpty

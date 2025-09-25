@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  postgres-account:
+    container_name: account_postgres
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: accountdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
