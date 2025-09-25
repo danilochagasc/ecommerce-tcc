@@ -11,16 +11,23 @@ import reactor.core.publisher.Mono
 class JwtReactiveAuthenticationManager(
     private val jwtProvider: TokenProvider,
 ) : ReactiveAuthenticationManager {
-    override fun authenticate(authentication: Authentication?): Mono<Authentication?> {
-        val token = (authentication?.credentials as String?) ?: return Mono.empty()
-        return Mono.fromCallable {
-            if (!jwtProvider.validateToken(token)) throw InvalidTokenException()
-            val claims = jwtProvider.getClaims(token)
-            UsernamePasswordAuthenticationToken(
-                claims.userId,
-                token,
-                listOf(SimpleGrantedAuthority("ROLE_${claims.role.name}")),
-            )
-        }
+    override fun authenticate(authentication: Authentication?): Mono<Authentication> {
+        val token = (authentication?.credentials as? String).orEmpty()
+        return Mono
+            .justOrEmpty(token)
+            .flatMap {
+                try {
+                    val claims = jwtProvider.getClaims(it)
+                    Mono.just(
+                        UsernamePasswordAuthenticationToken(
+                            claims.userId,
+                            it,
+                            listOf(SimpleGrantedAuthority("ROLE_${claims.role.name}")),
+                        ),
+                    )
+                } catch (ex: Exception) {
+                    Mono.error<Authentication>(InvalidTokenException())
+                }
+            }
     }
 }
