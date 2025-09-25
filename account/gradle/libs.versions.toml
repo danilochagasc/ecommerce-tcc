@@ -13,6 +13,7 @@ kotest-extensions = "1.1.2"
 mockk = "1.14.2"
 jdbc-postgresql = "42.7.7"
 flyway = "10.20.0"
+jjwt = "0.11.5"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -28,6 +29,7 @@ spring-boot-starter = {module = "org.springframework.boot:spring-boot-starter"}
 spring-boot-starter-test = {module = "org.springframework.boot:spring-boot-starter-test"}
 spring-boot-starter-core = { module = "org.springframework.boot:spring-boot-starter" }
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
 kotlin-reflect = {module = "org.jetbrains.kotlin:kotlin-reflect"}
 valiktor-core = {module = "org.valiktor:valiktor-core", version.ref = "valiktor"}
@@ -43,3 +45,6 @@ r2dbc-postgresql-driver = { module = "org.postgresql:r2dbc-postgresql" }
 jdbc-postgresql = {module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql"}
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }

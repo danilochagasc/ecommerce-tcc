@@ -55,12 +55,12 @@ dependencies {
     implementation(libs.kotlin.reflect)
 
     //auth
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation(libs.spring.boot.starter.security)
 
     //auth - jwt
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation(libs.jjwt.api)
+    runtimeOnly(libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.jackson)
 
     //testing
     testImplementation(libs.spring.boot.starter.test)
