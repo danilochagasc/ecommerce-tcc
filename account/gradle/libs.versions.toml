@@ -30,6 +30,8 @@ spring-boot-starter-test = {module = "org.springframework.boot:spring-boot-start
 spring-boot-starter-core = { module = "org.springframework.boot:spring-boot-starter" }
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus"}
 kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
 kotlin-reflect = {module = "org.jetbrains.kotlin:kotlin-reflect"}
 valiktor-core = {module = "org.valiktor:valiktor-core", version.ref = "valiktor"}

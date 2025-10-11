@@ -45,6 +45,9 @@ class SecurityConfig(
                 "/v3/api-docs/**",
                 "/swagger-ui.html",
                 "/swagger-ui/**",
+                "/actuator/health",
+                "/actuator/info",
+                "/actuator/prometheus",
             )
 
         val PUBLIC_POST_ROUTES =
