@@ -1,0 +1,165 @@
+version: "3.9"
+
+services:
+  # ==================== ACCOUNT SERVICE ====================
+  account-app:
+    build: ./account
+    container_name: ecommerce-account-app
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING_R2DBC_URL: r2dbc:postgresql://account-postgres:5432/accountdb
+      SPRING_R2DBC_USERNAME: postgres
+      SPRING_R2DBC_PASSWORD: postgres
+    ports:
+      - "8081:8080"
+    depends_on:
+      - account-flyway
+    networks:
+      - ecommerce-network
+
+  account-postgres:
+    container_name: ecommerce-account-postgres
+    image: postgres:17
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: accountdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - ecommerce-network
+
+  account-flyway:
+    image: flyway/flyway:10-alpine
+    container_name: ecommerce-account-flyway
+    depends_on:
+      - account-postgres
+    environment:
+      FLYWAY_URL: jdbc:postgresql://account-postgres:5432/accountdb
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: postgres
+      FLYWAY_SCHEMAS: public
+    command: migrate
+    volumes:
+      - ./account/src/main/resources/db/migration:/flyway/sql
+    networks:
+      - ecommerce-network
+
+  # ==================== CHECKOUT SERVICE ====================
+  checkout-app:
+    build: ./checkout
+    container_name: ecommerce-checkout-app
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING_DATA_REDIS_HOST: checkout-redis
+      SPRING_DATA_REDIS_PORT: 6379
+    ports:
+      - "8082:8080"
+    depends_on:
+      - checkout-redis
+    networks:
+      - ecommerce-network
+
+  checkout-redis:
+    container_name: ecommerce-checkout-redis
+    image: redis
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-network
+
+  # ==================== STOCK SERVICE ====================
+  stock-app:
+    build: ./stock
+    container_name: ecommerce-stock-app
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING_R2DBC_URL: r2dbc:postgresql://stock-postgres:5432/stockdb
+      SPRING_R2DBC_USERNAME: postgres
+      SPRING_R2DBC_PASSWORD: postgres
+    ports:
+      - "8083:8080"
+    depends_on:
+      - stock-flyway
+      - localstack
+    networks:
+      - ecommerce-network
+
+  stock-postgres:
+    container_name: ecommerce-stock-postgres
+    image: postgres:17
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: stockdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - ecommerce-network
+
+  stock-flyway:
+    image: flyway/flyway:10-alpine
+    container_name: ecommerce-stock-flyway
+    depends_on:
+      - stock-postgres
+    environment:
+      FLYWAY_URL: jdbc:postgresql://stock-postgres:5432/stockdb
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: postgres
+      FLYWAY_SCHEMAS: public
+    command: migrate
+    volumes:
+      - ./stock/src/main/resources/db/migration:/flyway/sql
+    networks:
+      - ecommerce-network
+
+  localstack:
+    container_name: ecommerce-localstack
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "./stock/scripts/localstack:/etc/localstack/init/ready.d"
+    networks:
+      - ecommerce-network
+
+  # ==================== MONITORING ====================
+  prometheus:
+    container_name: ecommerce-prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - ecommerce-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ecommerce-grafana
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_FEATURE_TOGGLES_ENABLE=accesscontrol
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge
