@@ -59,6 +59,10 @@ dependencies {
     implementation(libs.aws.sdk.s3)
     implementation(libs.aws.sdk.netty.client)
 
+    //monitoring
+    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.micrometer.registry.prometheus)
+
     //testing
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotest.runner.junit5)
