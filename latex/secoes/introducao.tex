@@ -1,0 +1,56 @@
+\chapter{\MakeUppercase{Introdução}}
+
+\section{Contextualização}
+
+Nos últimos anos, o desenvolvimento de software passou por transformações significativas impulsionadas pelo crescimento da demanda por aplicações cada vez mais complexas, escaláveis e de alta disponibilidade. Nesse cenário, sistemas de grande porte, como plataformas de comércio eletrônico, destacam-se pela necessidade de lidar com um volume expressivo de usuários, transações e dados em tempo real. A natureza dinâmica desse tipo de aplicação exige arquiteturas capazes de sustentar altos níveis de desempenho e confiabilidade, mesmo diante de picos de acesso e evolução constante das funcionalidades.
+
+Tradicionalmente, a arquitetura monolítica foi amplamente utilizada no desenvolvimento de sistemas corporativos, por oferecer simplicidade inicial e facilidade de implantação. No entanto, à medida que as aplicações crescem, essa abordagem tende a apresentar limitações em aspectos como escalabilidade, manutenibilidade e isolamento de falhas. Para contornar esses problemas, diversas organizações têm adotado arquiteturas distribuídas, nas quais os componentes do sistema são decompostos em partes menores e independentes.
+
+Entre essas abordagens, destaca-se a arquitetura de microsserviços, que propõe a construção de sistemas compostos por serviços autônomos, cada um responsável por uma funcionalidade específica do domínio. Essa arquitetura favorece a flexibilidade tecnológica, a implantação contínua e a escalabilidade horizontal, além de permitir que equipes diferentes trabalhem de forma paralela e independente. No entanto, sua adoção também traz novos desafios relacionados à comunicação entre serviços, observabilidade, segurança e orquestração.
+
+No contexto de plataformas de e-commerce, esses desafios tornam-se ainda mais evidentes, uma vez que o sistema deve garantir disponibilidade contínua, consistência de dados e experiência fluida para o usuário final. Assim, compreender as práticas e decisões envolvidas na adoção de microsserviços nesse tipo de aplicação é essencial tanto para o meio acadêmico quanto para o profissional, contribuindo para o aprimoramento de soluções mais robustas e eficientes.
+
+
+\section{Definição do Problema}
+
+Com o avanço das tecnologias e o aumento da complexidade das aplicações web, surgem novos desafios relacionados à forma como os sistemas são projetados, desenvolvidos e mantidos. No caso de plataformas de e-commerce, a necessidade de lidar com grande volume de requisições, atualizações frequentes e integração com diversos serviços externos evidencia a importância de arquiteturas escaláveis e resilientes. Nesse contexto, a arquitetura monolítica, embora simples em sua concepção inicial, tende a se tornar rígida e difícil de evoluir à medida que o sistema cresce.
+
+A arquitetura de microsserviços surge como uma alternativa a esse modelo, propondo a decomposição do sistema em módulos menores e independentes. Apesar de suas vantagens, como a escalabilidade e a flexibilidade tecnológica, sua adoção requer o domínio de novas práticas de desenvolvimento, orquestração e observabilidade. A ausência de um planejamento adequado pode resultar em um sistema distribuído complexo, difícil de manter e sujeito a falhas de comunicação entre serviços.
+
+Assim, o problema central deste trabalho consiste em compreender de que forma uma arquitetura baseada em microsserviços pode ser projetada e implementada de maneira eficiente em um sistema de e-commerce, de modo a garantir robustez, resiliência e escalabilidade, ao mesmo tempo em que se mantém viável em termos de desenvolvimento e manutenção. A partir dessa análise, busca-se relatar a experiência prática de implementação dessa abordagem, identificando os desafios enfrentados e as soluções adotadas durante o processo.
+
+
+\section{Objetivos Gerais e Específicos}
+
+Este trabalho tem como objetivo geral desenvolver uma solução backend baseada em uma arquitetura de microsserviços independentes, aplicável a um sistema de e-commerce. A proposta visa construir uma aplicação customizável, robusta, resiliente e escalável, incorporando boas práticas e padrões consolidados na literatura. Além do desenvolvimento técnico, busca-se relatar a experiência prática do processo de concepção, modelagem e implementação da arquitetura, destacando os desafios enfrentados e as soluções adotadas.
+
+Para atingir o objetivo geral, foram definidos os seguintes objetivos específicos:
+
+\begin{itemize}
+    \item Revisar a literatura e as boas práticas relacionadas a arquiteturas de microsserviços, identificando padrões e abordagens adequadas para sistemas de e-commerce;
+    \item Modelar a arquitetura de um backend baseado em microsserviços, especificando a comunicação entre os serviços, as responsabilidades de cada módulo e as tecnologias envolvidas;
+    \item Implementar um protótipo funcional da arquitetura proposta, contemplando serviços essenciais de um e-commerce, como catálogo de produtos, carrinho, pedidos e usuários;
+    \item Validar a solução por meio de testes de desempenho, escalabilidade e resiliência, avaliando sua adequação frente aos objetivos estabelecidos;
+    \item Refletir sobre os desafios, limitações e aprendizados obtidos durante o processo, de forma a gerar insights que possam auxiliar desenvolvedores e pesquisadores interessados no tema.
+\end{itemize}
+
+
+\section{Justificativa}
+
+A adoção de microsserviços tem se mostrado uma tendência importante no desenvolvimento de sistemas complexos, especialmente em plataformas de e-commerce, onde a escalabilidade, a resiliência e a disponibilidade contínua são requisitos críticos. Apesar das vantagens, sua implementação envolve desafios significativos, relacionados à comunicação entre serviços, observabilidade, monitoramento, segurança e integração com sistemas legados. Relatar experiências práticas de implementação de microsserviços fornece contribuições valiosas tanto para a comunidade acadêmica quanto para profissionais da área, permitindo a disseminação de boas práticas, aprendizados e soluções para problemas comuns.
+
+Este trabalho justifica-se por sua capacidade de fornecer uma visão aplicada sobre a adoção de microsserviços, documentando o processo de concepção, modelagem, implementação e validação de uma arquitetura voltada a um sistema de e-commerce. Ao compartilhar os desafios enfrentados e as estratégias adotadas, busca-se contribuir para o aprimoramento de métodos e práticas no desenvolvimento de sistemas distribuídos, oferecendo suporte para pesquisadores, estudantes e desenvolvedores interessados no tema.
+
+
+\section{Estrutura do Trabalho}
+
+O presente trabalho está organizado em seis capítulos, conforme descrito a seguir:
+
+\begin{itemize}
+    \item \textbf{Capítulo 1 – Introdução:} apresenta o contexto do estudo, a definição do problema, os objetivos gerais e específicos, a justificativa do trabalho e a organização dos capítulos subsequentes;
+    \item \textbf{Capítulo 2 – Fundamentação Teórica:} aborda conceitos de arquitetura de software, compara arquiteturas monolíticas e microsserviços, detalha princípios de robustez, resiliência e escalabilidade, e apresenta padrões de comunicação e ferramentas utilizadas em microsserviços;
+    \item \textbf{Capítulo 3 – Modelagem da Arquitetura Proposta e Implementação do Protótipo:} descreve o levantamento de requisitos, a definição dos microsserviços, o diagrama arquitetural, as escolhas tecnológicas, a configuração do ambiente e o desenvolvimento dos serviços independentes;
+    \item \textbf{Capítulo 4 – Validação e Testes:} apresenta as estratégias de testes adotadas, incluindo desempenho, escalabilidade, resiliência e análise comparativa com outras abordagens;
+    \item \textbf{Capítulo 5 – Resultados e Discussão:} avalia a arquitetura frente aos objetivos estabelecidos, destacando benefícios e limitações identificadas;
+    \item \textbf{Capítulo 6 – Conclusão e Trabalhos Futuros:} apresenta as considerações finais, reflexões sobre aprendizados e sugestões para evolução da solução.
+\end{itemize}

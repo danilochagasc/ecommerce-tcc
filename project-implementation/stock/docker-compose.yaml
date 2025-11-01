@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+
+  stock-app:
+    build: .
+    container_name: stock-app-local
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING_R2DBC_URL: r2dbc:postgresql://postgres-stock:5432/stockdb
+      SPRING_R2DBC_USERNAME: postgres
+      SPRING_R2DBC_PASSWORD: postgres
+      AWS_S3_ENDPOINT_OVERRIDE_URL: http://localstack:4566
+    ports:
+      - "8083:8080"
+    depends_on:
+      - postgres-stock
+      - localstack
+    networks:
+      - stock-network
+
+  postgres-stock:
+    container_name: stock-postgres-local
+    image: postgres:17
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: stockdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - stock-network
+
+  localstack:
+    container_name: stock-localstack-local
+    image: localstack/localstack:latest
+    ports:
+      - "4567:4566" # LocalStack Gateway
+    environment:
+        - SERVICES=s3
+        - DEBUG=1
+        - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "./scripts/localstack:/etc/localstack/init/ready.d"
+    networks:
+      - stock-network
+
+
+  prometheus:
+    container_name: stock-prometheus-local
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9093:9090"
+    networks:
+      - stock-network
+
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: stock-grafana-local
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_FEATURE_TOGGLES_ENABLE=accesscontrol
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3003:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - stock-network
+
+networks:
+  stock-network:
+    driver: bridge

@@ -1,0 +1,353 @@
+\chapter{\MakeUppercase{Metodologia}}
+
+\section{Levantamento e Análise de Requisitos}
+
+Na fase de levantamento e análise de requisitos, foram definidos os principais critérios para o desenvolvimento de uma arquitetura que fosse adaptável, escalável e de fácil manutenção. Essa etapa teve como objetivo garantir que o sistema pudesse evoluir ao longo do tempo, acompanhar novas demandas de negócio e permitir a implementação de funcionalidades adicionais sem comprometer a estabilidade do conjunto.
+
+Com base nesses princípios, o projeto foi estruturado em torno de fundamentos arquiteturais que orientaram todas as decisões técnicas durante o processo de desenvolvimento:
+
+\begin{itemize}
+\item \textbf{Alta coesão:} cada microsserviço deve ter uma responsabilidade bem definida e concentrar funcionalidades fortemente relacionadas entre si, favorecendo a clareza do código e a facilidade de manutenção.
+\item \textbf{Facilidade de manutenção:} o sistema deve ser simples de manter e evoluir, adotando padrões arquiteturais bem definidos e um código de baixa complexidade, que permita a reutilização de componentes em diferentes contextos.
+\item \textbf{Escalabilidade:} a arquitetura deve possibilitar o escalonamento independente dos serviços, permitindo o aumento da capacidade de processamento conforme a demanda, sem a necessidade de modificações estruturais no sistema.
+\item \textbf{Observabilidade:} o sistema deve ser projetado com mecanismos que permitam o monitoramento contínuo, a coleta de métricas e o rastreamento de requisições, facilitando a detecção e correção de falhas.
+\end{itemize}
+
+Esses pilares nortearam a definição dos requisitos técnicos e funcionais, estabelecendo uma base sólida para o desenvolvimento de um sistema modular, confiável e preparado para evoluir de forma sustentável.
+
+\section{Definição dos Microsserviços e suas Responsabilidades}
+
+Com base nos princípios arquiteturais definidos, foi projetada uma arquitetura de microsserviços na qual cada componente possui responsabilidades bem delimitadas e específicas. A seguir, são descritos os principais serviços que compõem o sistema de e-commerce desenvolvido.
+
+\subsection{Account Service}
+
+O \textbf{Account Service} é responsável pela gestão de usuários e autenticação do sistema. Este serviço centraliza as seguintes funcionalidades:
+
+\begin{itemize}
+\item \textbf{Gestão de usuários}: cadastro, atualização, consulta e exclusão de perfis, incluindo validação de dados pessoais como CPF, e-mail e telefone;
+\item \textbf{Autenticação e autorização}: sistema de login com geração de tokens JWT, controle de acesso baseado em papéis (ADMIN/USER) e validação de credenciais;
+\item \textbf{Gestão de senhas}: alteração de senhas com validação da senha atual e uso de criptografia segura;
+\item \textbf{Gestão de endereços}: cadastro e manutenção de endereços de usuários, com limite de até três endereços por conta;
+\item \textbf{Controle de acesso}: implementação de rotas públicas e protegidas, com níveis diferenciados de permissão para administradores e usuários comuns.
+\end{itemize}
+
+O serviço utiliza o banco de dados PostgreSQL e implementa migrações automáticas com o \textit{Flyway}, assegurando a integridade e evolução do esquema de dados.
+
+\subsection{Stock Service}
+
+O \textbf{Stock Service} é responsável pela gestão completa do catálogo de produtos e do controle de estoque. Suas principais responsabilidades são:
+
+\begin{itemize}
+\item \textbf{Gestão de produtos}: criação, atualização, consulta e exclusão de produtos, incluindo informações como nome, descrição, preço e quantidade disponível;
+\item \textbf{Gestão de categorias}: organização dos produtos em categorias hierárquicas, facilitando a navegação e filtragem;
+\item \textbf{Controle de estoque}: monitoramento da quantidade disponível e atualização automática em operações de venda;
+\item \textbf{Gestão de imagens}: upload e armazenamento de imagens de produtos integrados a serviços de armazenamento em nuvem;
+\item \textbf{Validação de disponibilidade}: verificação de estoque suficiente antes de permitir operações de compra.
+\end{itemize}
+
+Assim como o \textit{Account Service}, este serviço utiliza PostgreSQL com o Flyway para versionamento do esquema e aplica validações rigorosas para garantir a consistência dos dados.
+
+\subsection{Checkout Service}
+
+O \textbf{Checkout Service} é responsável por gerenciar o processo de finalização de compras e aplicação de descontos. Entre suas principais funcionalidades, destacam-se:
+
+\begin{itemize}
+\item \textbf{Gestão de carrinho}: adição, remoção e modificação de itens no carrinho de compras, com controle de quantidades e validações;
+\item \textbf{Gestão de cupons}: criação, aplicação e validação de cupons de desconto, com suporte a descontos fixos e percentuais;
+\item \textbf{Cálculo de valores}: cálculo automático de totais, subtotais e valores com desconto;
+\item \textbf{Validação de cupons}: verificação de validade temporal e condições de uso;
+\item \textbf{Persistência temporária}: armazenamento de carrinhos e cupons em Redis, permitindo acesso rápido e eficiente.
+\end{itemize}
+
+Este serviço utiliza o Redis como banco de dados em memória, otimizando o desempenho de leitura e escrita — aspectos essenciais para a experiência do usuário no processo de compra.
+
+\subsection{Order Service}
+
+O \textbf{Order Service} gerencia o ciclo de vida completo dos pedidos, atuando como intermediário entre o processo de checkout e os demais serviços. Suas responsabilidades incluem:
+
+\begin{itemize}
+\item \textbf{Criação de pedidos}: recebimento das informações do checkout e geração dos registros de pedido;
+\item \textbf{Gestão do ciclo de vida}: controle dos estados de um pedido (aguardando pagamento, pagamento confirmado, processando, cancelado);
+\item \textbf{Integração com o Payment Service}: comunicação para processamento de transações financeiras;
+\item \textbf{Notificações}: disparo de eventos para notificação dos usuários sobre mudanças de status por meio da AWS Lambda e do Amazon SES;
+\item \textbf{Histórico de pedidos}: manutenção do histórico completo de compras dos usuários;
+\item \textbf{Validação de dados}: conferência de consistência entre os dados do carrinho, usuário e estoque.
+\end{itemize}
+
+\subsection{Payment Service}
+
+O \textbf{Payment Service} é responsável pelo processamento de pagamentos e integração com diferentes gateways. Suas principais funcionalidades são:
+
+\begin{itemize}
+\item \textbf{Processamento de pagamentos}: integração com múltiplas plataformas de pagamento (cartão, PIX, boleto);
+\item \textbf{Gestão de transações}: criação, confirmação e cancelamento de transações financeiras;
+\item \textbf{Webhooks}: recebimento e processamento de notificações de status enviadas pelos gateways;
+\item \textbf{Reconciliação}: sincronização entre transações internas e externas;
+\item \textbf{Segurança}: aplicação de boas práticas de segurança para proteção de dados sensíveis;
+\item \textbf{Relatórios financeiros}: geração de relatórios consolidados de transações e recebimentos.
+\end{itemize}
+
+\subsection{Integrações e Comunicação}
+
+\subsubsection{Integração com AWS Lambda e SES}
+
+O sistema realiza a integração do \textbf{Order Service} com serviços da AWS para envio de notificações automáticas. O fluxo de integração é composto pelos seguintes elementos:
+
+\begin{itemize}
+\item \textbf{AWS Lambda}: função serverless acionada pelo \textit{Order Service} a cada mudança no status de um pedido;
+\item \textbf{AWS SES}: serviço de e-mail da Amazon responsável pelo envio das notificações aos usuários;
+\item \textbf{Fluxo de notificação}: Order Service → AWS Lambda → AWS SES → E-mail do usuário;
+\item \textbf{Tipos de notificação}: confirmação de pedido, atualização de status, informações de envio e entrega.
+\end{itemize}
+
+Essa arquitetura modular permite que cada serviço seja desenvolvido, testado e implantado de forma independente, promovendo manutenção facilitada, evolução contínua e baixo acoplamento entre os componentes do sistema.
+
+\section{Desenvolvimento dos Microsserviços}
+
+\subsection{Tecnologias e Ferramentas}
+
+A escolha das tecnologias e ferramentas utilizadas no desenvolvimento do sistema de e-commerce foi fundamentada nos princípios arquiteturais estabelecidos, priorizando soluções que oferecessem alta performance, facilidade de manutenção e capacidade de escalabilidade. Esta seção apresenta e justifica as principais tecnologias adotadas, demonstrando como cada uma contribui para o atendimento dos requisitos do projeto.
+
+\subsubsection{Spring Boot}
+
+O \textbf{Spring Boot} foi adotado como o principal \textit{framework} para o desenvolvimento dos microsserviços, por oferecer um conjunto de recursos que se alinham diretamente aos objetivos deste projeto. Como base do ecossistema Java/Kotlin, o Spring Boot simplifica a criação de aplicações robustas, escaláveis e preparadas para produção. Entre suas principais características, destacam-se:
+
+\begin{itemize}
+\item \textbf{Configuração automática}: reduz significativamente a complexidade da configuração inicial, permitindo que o foco do desenvolvimento permaneça na lógica de negócio em vez da infraestrutura;
+\item \textbf{Convenção sobre configuração}: estabelece padrões e boas práticas que padronizam o código e facilitam sua manutenção;
+\item \textbf{Ecossistema maduro}: oferece integração nativa com diversas tecnologias, incluindo bancos de dados, sistemas de cache, monitoramento e segurança;
+\item \textbf{Preparação para produção}: inclui funcionalidades essenciais como \textit{health checks}, métricas, configuração externa e suporte a ambientes diversos;
+\item \textbf{Suporte a microsserviços}: fornece abstrações e ferramentas específicas para a criação de serviços independentes, com configuração isolada para cada contexto.
+\end{itemize}
+
+Foi utilizada a versão 3.5.5 do Spring Boot, garantindo acesso às funcionalidades mais recentes, melhorias de desempenho e compatibilidade total com o Java 17 e recursos modernos de desenvolvimento.
+
+\subsubsection{Spring WebFlux}
+
+O \textbf{Spring WebFlux} foi escolhido como \textit{stack} web reativa para todos os microsserviços, por proporcionar um modelo de programação não bloqueante altamente eficiente. Essa decisão foi fundamentada em aspectos técnicos e de desempenho, tais como:
+
+\begin{itemize}
+\item \textbf{Programação reativa}: possibilita o desenvolvimento de aplicações capazes de lidar com alta concorrência sem a necessidade de múltiplas \textit{threads}, otimizando o uso de recursos do sistema;
+\item \textbf{Escalabilidade}: oferece desempenho superior em cenários de alta carga, sendo ideal para sistemas que processam um grande volume de requisições simultâneas;
+\item \textbf{Integração com bibliotecas reativas}: permite integração direta com drivers e bibliotecas reativas de banco de dados, garantindo consistência em toda a arquitetura;
+\item \textbf{Flexibilidade}: suporta tanto paradigmas funcionais quanto imperativos, possibilitando a escolha do estilo de programação mais adequado para cada módulo;
+\item \textbf{Backpressure}: implementa controle automático de fluxo de dados, prevenindo sobrecarga do sistema em situações de variação entre produção e consumo de dados.
+\end{itemize}
+
+A implementação segue o padrão de roteamento funcional por meio do \textit{coRouter}, que proporciona uma definição declarativa de rotas e simplifica a manutenção do código. Além disso, o uso de \textit{Kotlin Coroutines}, integrado via \textit{kotlinx-coroutines-reactor}, permite a utilização de funções suspensas (\textit{suspending functions}) com uma sintaxe concisa e expressiva.
+
+\subsubsection{Kotlin}
+
+A linguagem \textbf{Kotlin} foi escolhida como principal linguagem de desenvolvimento do projeto por oferecer uma combinação equilibrada entre produtividade, segurança e interoperabilidade. Executando sobre a \textit{Java Virtual Machine} (JVM), o Kotlin é totalmente compatível com o ecossistema Java, permitindo que o código Kotlin e Java coexistam e sejam compilados para o mesmo bytecode. Essa característica garante integração transparente com bibliotecas e frameworks amplamente utilizados, como o Spring Boot.
+
+\begin{itemize}
+\item \textbf{Concisão e legibilidade}: a sintaxe do Kotlin é mais expressiva e enxuta em comparação ao Java, reduzindo a quantidade de código boilerplate e tornando o desenvolvimento mais produtivo. Estruturas como \textit{data classes} e \textit{type inference} simplificam significativamente a criação e manipulação de objetos.
+\item \textbf{Segurança de tipos e \textit{Null Safety}}: o sistema de tipos da linguagem evita erros comuns de referência nula (\textit{NullPointerException}) em tempo de compilação, aumentando a robustez e a confiabilidade do sistema. Essa característica é especialmente importante em arquiteturas distribuídas, onde falhas podem se propagar rapidamente entre serviços.
+
+\item \textbf{Interoperabilidade com Java}: por ser executado na JVM e compilar para o mesmo bytecode, o Kotlin pode utilizar qualquer biblioteca Java existente sem necessidade de adaptações. Isso permite aproveitar o extenso ecossistema Java — incluindo frameworks, ferramentas e bibliotecas de terceiros — sem comprometer a modernidade e concisão do código.
+
+\item \textbf{Programação assíncrona com Coroutines}: o suporte nativo a \textit{coroutines} possibilita a criação de código não bloqueante de forma simples e intuitiva. Essa abordagem reduz a complexidade de gerenciamento de threads e callbacks, tornando o código reativo mais próximo do estilo imperativo tradicional, sem perda de performance.
+
+\item \textbf{Extension functions e expressividade}: as \textit{extension functions} permitem adicionar novas funcionalidades a classes existentes sem modificar seu código-fonte, promovendo um estilo de programação mais modular e reutilizável. Esse recurso é amplamente utilizado no projeto para encapsular lógicas comuns e melhorar a clareza do código, especialmente em componentes de domínio e camadas de infraestrutura.
+
+\item \textbf{Suporte oficial e integração com o Spring}: o Kotlin é oficialmente suportado pelo Spring Framework, o que assegura integração nativa com recursos do Spring Boot, Spring Data e WebFlux. Essa compatibilidade se traduz em uma experiência de desenvolvimento fluida e consistente, aproveitando recursos modernos da linguagem em conjunto com a maturidade do ecossistema Spring.
+\end{itemize}
+
+A versão 2.0.21 do Kotlin foi utilizada, compilada para a JVM 17. Essa configuração aproveita melhorias recentes de desempenho, recursos modernos da linguagem e suporte a \textit{flags} experimentais, permitindo explorar o máximo potencial da linguagem dentro de uma arquitetura baseada em microsserviços reativos.
+
+\subsubsection{R2DBC}
+
+O \textbf{R2DBC} (\textit{Reactive Relational Database Connectivity}) foi adotado em substituição ao tradicional JPA/Hibernate, por oferecer um modelo de acesso reativo a bancos de dados relacionais, mais adequado ao paradigma assíncrono proposto neste projeto. Entre suas vantagens, destacam-se:
+
+\begin{itemize}
+\item \textbf{Programação reativa}: mantém a consistência reativa em toda a aplicação, incluindo a camada de persistência;
+\item \textbf{Desempenho aprimorado}: elimina o overhead do modelo ORM tradicional, proporcionando acesso direto e eficiente ao banco de dados;
+\item \textbf{Controle granular}: permite a execução de consultas SQL personalizadas, oferecendo maior controle sobre o desempenho e otimizações específicas;
+\item \textbf{Simplicidade}: apresenta um modelo mais leve e direto, reduzindo a complexidade de configuração e depuração;
+\item \textbf{Non-blocking I/O}: garante operações de acesso ao banco de dados não bloqueantes, totalmente integradas ao modelo reativo do WebFlux;
+\item \textbf{Transparência}: proporciona maior visibilidade sobre as operações executadas, facilitando o monitoramento e a otimização de desempenho.
+\end{itemize}
+
+A implementação foi realizada utilizando o \textit{Spring Data R2DBC} com PostgreSQL como driver principal, combinando a facilidade de uso do Spring Data com o desempenho do modelo reativo. As consultas foram desenvolvidas por meio de \textit{repositories} personalizados, que utilizam o \textit{DatabaseClient} para execução de SQL nativo, permitindo controle detalhado sobre as operações de banco de dados.
+
+\subsubsection{Redis}
+
+O \textbf{Redis} foi escolhido como banco de dados em memória para o \textit{Checkout Service} devido às suas características específicas que atendem aos requisitos do domínio:
+
+\begin{itemize}
+\item \textbf{Performance}: acesso extremamente rápido a dados em memória, essencial para operações de carrinho e cupons que precisam de resposta imediata;
+\item \textbf{Estruturas de dados ricas}: oferece tipos de dados especializados (strings, hashes, lists, sets) que se adequam perfeitamente aos diferentes tipos de dados do checkout;
+\item \textbf{Expiração automática}: suporte nativo a TTL (Time To Live), permitindo que carrinhos e cupons expirem automaticamente sem necessidade de limpeza manual;
+\item \textbf{Persistência opcional}: pode ser configurado para persistir dados em disco quando necessário, oferecendo flexibilidade entre performance e durabilidade;
+\item \textbf{Atomicidade}: operações atômicas que garantem consistência em operações complexas como atualização de carrinho;
+\item \textbf{Escalabilidade}: suporte a clustering e replicação para cenários de alta disponibilidade.
+\end{itemize}
+
+A implementação utiliza o \textit{Spring Data Redis} com suporte reativo através do \textit{ReactiveStringRedisTemplate}, mantendo a consistência reativa da aplicação. Os dados são serializados em JSON para facilitar a manipulação e debugging, utilizando templates específicos para conversão entre objetos de domínio e representação Redis.
+
+\subsubsection{PostgreSQL}
+
+O \textbf{PostgreSQL} foi escolhido como banco de dados relacional para os demais serviços pelas seguintes razões:
+
+\begin{itemize}
+\item \textbf{Confiabilidade}: banco de dados maduro e amplamente testado em ambientes de produção, oferecendo alta confiabilidade e consistência de dados;
+\item \textbf{Recursos avançados}: suporte a tipos de dados complexos, índices avançados, transações ACID completas e recursos de integridade referencial;
+\item \textbf{Performance}: otimizações avançadas de consulta, incluindo query planner sofisticado e suporte a índices especializados;
+\item \textbf{Extensibilidade}: suporte a extensões que permitem adicionar funcionalidades específicas quando necessário;
+\item \textbf{Padrões SQL}: conformidade com padrões SQL, facilitando migração e manutenção;
+\item \textbf{Custo-benefício}: solução open-source robusta sem custos de licenciamento.
+\end{itemize}
+
+A versão 17 do PostgreSQL foi utilizada, aproveitando as melhorias de performance e recursos mais recentes. Cada serviço possui seu próprio banco de dados independente, garantindo isolamento de dados e permitindo evolução independente dos esquemas.
+
+\subsubsection{Flyway}
+
+O \textbf{Flyway} foi escolhido como ferramenta de versionamento de banco de dados pelos seguintes motivos:
+
+\begin{itemize}
+\item \textbf{Simplicidade}: ferramenta simples e direta para gerenciamento de migrations, sem complexidade desnecessária;
+\item \textbf{Versionamento}: controle de versão automático baseado em timestamps ou números sequenciais;
+\item \textbf{Integração}: integração nativa com Spring Boot através do plugin oficial;
+\item \textbf{Confiabilidade}: execução de migrations de forma segura com rollback automático em caso de falha;
+\item \textbf{Transparência}: migrations em SQL puro, facilitando o entendimento e debugging;
+\item \textbf{Automação}: execução automática durante o startup da aplicação, garantindo que o banco esteja sempre atualizado.
+\end{itemize}
+
+As migrations são executadas automaticamente durante a inicialização dos containers através do Flyway standalone, garantindo que o esquema do banco esteja atualizado antes da aplicação Spring Boot iniciar.
+
+\subsubsection{Docker e Docker Compose}
+
+\textbf{Docker} e \textbf{Docker Compose} foram utilizados para containerização e orquestração dos serviços pelos seguintes benefícios:
+
+\begin{itemize}
+\item \textbf{Consistência}: garante que a aplicação execute de forma idêntica em diferentes ambientes (desenvolvimento, teste, produção);
+\item \textbf{Isolamento}: cada serviço executa em seu próprio container, evitando conflitos de dependências;
+\item \textbf{Escalabilidade}: facilita o escalonamento horizontal dos serviços conforme a demanda;
+\item \textbf{Portabilidade}: permite deploy em qualquer ambiente que suporte Docker;
+\item \textbf{Simplicidade}: configuração declarativa através de arquivos YAML que facilitam a manutenção e evolução da infraestrutura.
+\end{itemize}
+
+\subsubsection{Monitoramento: Prometheus e Grafana}
+
+O sistema de monitoramento foi implementado utilizando \textbf{Prometheus} para coleta de métricas e \textbf{Grafana} para visualização:
+
+\begin{itemize}
+\item \textbf{Prometheus}: coleta métricas de performance, saúde e comportamento dos microsserviços através do Spring Boot Actuator e Micrometer;
+\item \textbf{Grafana}: dashboards visuais que facilitam a identificação de problemas e análise de performance;
+\item \textbf{Observabilidade}: permite monitoramento proativo do sistema, facilitando a detecção e resolução de problemas;
+\item \textbf{Métricas customizadas}: possibilidade de definir métricas específicas do domínio para monitoramento de negócio.
+\end{itemize}
+
+\subsubsection{AWS SDK e LocalStack}
+
+Para desenvolvimento local e integração com serviços AWS, foi utilizada a combinação de \textbf{AWS SDK} e \textbf{LocalStack}:
+
+\begin{itemize}
+\item \textbf{AWS SDK}: integração oficial com serviços AWS como S3 para armazenamento de imagens;
+\item \textbf{LocalStack}: emulação local dos serviços AWS para desenvolvimento e testes, reduzindo custos e dependências externas;
+\item \textbf{Flexibilidade}: permite desenvolvimento local completo sem necessidade de recursos AWS reais;
+\item \textbf{Compatibilidade}: garante que o código desenvolvido localmente funcione de forma idêntica em ambiente AWS real.
+\end{itemize}
+
+A escolha dessas tecnologias resultou em uma arquitetura moderna, performática e maintível que atende aos requisitos de escalabilidade, observabilidade e facilidade de manutenção estabelecidos no projeto.
+
+\subsection{Implementação dos Microsserviços}
+
+A implementação dos microsserviços seguiu princípios arquiteturais bem estabelecidos, combinando \textbf{Domain Driven Design (DDD)} e \textbf{Arquitetura Hexagonal} para criar uma estrutura robusta, maintível e testável. Esta abordagem garantiu a separação clara de responsabilidades, facilitando a evolução e manutenção do sistema ao longo do tempo.
+
+\subsubsection{Arquitetura e Organização de Diretórios}
+
+Cada microsserviço foi estruturado seguindo uma organização de diretórios que reflete os princípios da Arquitetura Hexagonal e do DDD. A estrutura padrão adotada em todos os serviços é:
+
+\begin{itemize}
+\item \textbf{core/domain}: contém as entidades de domínio, value objects, agregados e regras de negócio puras, sem dependências externas;
+\item \textbf{core/application}: implementa os casos de uso através de services e commands/queries, coordenando as operações de domínio;
+\item \textbf{adapter}: implementa as interfaces definidas no domínio, conectando a aplicação com tecnologias externas como bancos de dados, APIs HTTP e sistemas de cache.
+\end{itemize}
+
+Esta organização promove a \textbf{inversão de dependência}, onde o domínio não depende de tecnologias específicas, mas sim as tecnologias dependem das abstrações definidas no domínio. Como resultado, a lógica de negócio permanece isolada e pode ser testada independentemente das implementações técnicas.
+
+\subsubsection{Domain Driven Design (DDD)}
+
+O DDD foi aplicado de forma consistente em todos os microsserviços, com foco na modelagem do domínio de negócio através de conceitos bem definidos:
+
+\begin{itemize}
+\item \textbf{Agregados}: cada entidade principal (User, Product, Category, Cart, Coupon) é tratada como um agregado com identificadores únicos do tipo \textit{AggregateId}, garantindo consistência e integridade;
+\item \textbf{Value Objects}: identificadores específicos como \textit{ProductId}, \textit{CategoryId}, \textit{UserId} encapsulam a lógica de identificação e validação;
+\item \textbf{Regras de Negócio}: validações e comportamentos específicos do domínio são implementados diretamente nas entidades através de métodos como \textit{validate()}, \textit{update()}, \textit{decreaseQuantity()};
+\item \textbf{Invariantes}: cada entidade garante sua própria consistência através de validações internas utilizando a biblioteca Valiktor para validação declarativa.
+\end{itemize}
+
+A implementação do DDD resultou em código mais expressivo e próximo da linguagem de negócio, facilitando a comunicação entre desenvolvedores e stakeholders, além de garantir que as regras de negócio sejam aplicadas de forma consistente em toda a aplicação.
+
+\subsubsection{Arquitetura Hexagonal}
+
+A Arquitetura Hexagonal foi implementada através da separação clara entre três camadas principais:
+
+\begin{itemize}
+\item \textbf{Core (Domínio + Aplicação)}: camada central que contém toda a lógica de negócio e casos de uso, sem dependências externas;
+\item \textbf{Adapters de Entrada}: interfaces HTTP através de handlers e routers que recebem requisições externas e as convertem em comandos/queries da aplicação;
+\item \textbf{Adapters de Saída}: implementações de repositórios que conectam o domínio com sistemas de persistência (PostgreSQL, Redis) e serviços externos (AWS S3).
+\end{itemize}
+
+Esta arquitetura garante que mudanças em tecnologias externas (como troca de banco de dados ou framework web) não afetem a lógica de negócio central. Os adapters implementam interfaces definidas no domínio, permitindo que diferentes implementações sejam facilmente substituídas através de injeção de dependência.
+
+\subsubsection{Tratamento de Exceções}
+
+O sistema implementa um tratamento de exceções centralizado e consistente através do Spring WebFlux, utilizando a interface \textit{WebExceptionHandler} para capturar e processar todas as exceções não tratadas em cada microsserviço. Esta abordagem oferece os seguintes benefícios:
+
+\begin{itemize}
+\item \textbf{Consistência}: todas as exceções são tratadas de forma uniforme, garantindo respostas padronizadas para os clientes;
+\item \textbf{Logging centralizado}: todas as exceções são automaticamente logadas com contexto completo através da biblioteca Kotlin Logging, facilitando o debugging e monitoramento;
+\item \textbf{Mapeamento automático}: exceções de domínio são automaticamente mapeadas para códigos HTTP apropriados (404 para NotFound, 409 para Conflict, 400 para BadRequest);
+\item \textbf{Resposta estruturada}: todas as respostas de erro seguem um formato padronizado com mensagem, código de status e timestamp.
+\end{itemize}
+
+A implementação utiliza o Spring WebFlux através da anotação \textit{@Component} e \textit{@Order(-2)} para garantir que o handler seja executado antes dos handlers padrão do framework. O \textit{GlobalErrorHandler} implementa a interface \textit{WebExceptionHandler}, que é automaticamente descoberta pelo Spring através do mecanismo de injeção de dependência.
+
+As exceções são categorizadas em três tipos principais:
+\begin{itemize}
+\item \textbf{Exceções de Domínio}: representam violações de regras de negócio (ex: \textit{ProductNotFoundException}, \textit{InsufficientProductQuantityException});
+\item \textbf{Exceções de Validação}: capturam erros de validação de entrada através do Valiktor (ex: \textit{ConstraintViolationException});
+\item \textbf{Exceções Genéricas}: tratam erros inesperados com uma mensagem genérica para não expor detalhes internos.
+\end{itemize}
+
+O tratamento utiliza Kotlin Serialization para converter as respostas de erro em JSON, garantindo que todas as exceções retornem uma estrutura consistente com os campos \textit{message}, \textit{status} e \textit{timestamp}. Esta abordagem garante que os clientes da API recebam sempre respostas previsíveis, independentemente do tipo de erro ocorrido.
+
+\subsubsection{Padrões de Implementação}
+
+Cada microsserviço segue padrões consistentes de implementação:
+
+\begin{itemize}
+\item \textbf{Commands e Queries}: separação clara entre operações que modificam estado (commands) e operações de consulta (queries), facilitando a manutenção e testabilidade;
+\item \textbf{Services de Aplicação}: coordenam a execução de casos de uso, orquestrando chamadas para repositórios e aplicando regras de negócio;
+\item \textbf{Repositórios}: abstraem o acesso a dados através de interfaces definidas no domínio, permitindo diferentes implementações (R2DBC para PostgreSQL, Redis para cache);
+\item \textbf{Handlers HTTP}: convertem requisições HTTP em comandos/queries da aplicação, mantendo a separação entre protocolo de comunicação e lógica de negócio.
+\end{itemize}
+
+\subsubsection{Validação e Integridade de Dados}
+
+O sistema implementa validação em múltiplas camadas para garantir a integridade dos dados:
+
+\begin{itemize}
+\item \textbf{Validação de Domínio}: cada entidade valida seus próprios dados através de métodos internos, garantindo que apenas objetos válidos sejam criados;
+\item \textbf{Validação de Entrada}: requests HTTP são validados utilizando Valiktor antes de serem convertidos em comandos;
+\item \textbf{Validação de Banco}: constraints de banco de dados fornecem uma camada adicional de proteção contra dados inconsistentes;
+\item \textbf{Validação de Negócio}: regras específicas do domínio são aplicadas nos services de aplicação, como verificação de existência antes de operações.
+\end{itemize}
+
+Esta abordagem em camadas garante que dados inválidos sejam detectados e tratados o mais cedo possível no fluxo de processamento, melhorando a experiência do usuário e a robustez do sistema.
+
+\subsubsection{Benefícios da Arquitetura Implementada}
+
+A arquitetura adotada oferece diversos benefícios que se alinham com os objetivos do projeto:
+
+\begin{itemize}
+\item \textbf{Testabilidade}: a separação clara de responsabilidades facilita a criação de testes unitários e de integração, com mocks facilmente aplicáveis nas interfaces;
+\item \textbf{Manutenibilidade}: mudanças em uma camada não afetam outras, facilitando a evolução e correção de bugs;
+\item \textbf{Escalabilidade}: cada componente pode ser otimizado independentemente, e novos adapters podem ser facilmente adicionados;
+\item \textbf{Legibilidade}: o código reflete claramente a estrutura do domínio de negócio, facilitando o entendimento por novos desenvolvedores;
+\item \textbf{Flexibilidade}: tecnologias externas podem ser substituídas sem impacto na lógica de negócio central.
+\end{itemize}
+
+A implementação desta arquitetura resultou em um sistema robusto, maintível e preparado para evolução, atendendo aos requisitos de qualidade estabelecidos no projeto.

@@ -1,0 +1,150 @@
+\chapter{Referencial Teórico}
+
+Este capítulo apresenta os fundamentos teóricos que embasam o desenvolvimento deste trabalho, abordando conceitos essenciais sobre arquiteturas de software com foco em microsserviços. São discutidas as diferenças entre arquiteturas monolíticas e distribuídas, princípios de robustez, resiliência e escalabilidade, bem como padrões e práticas amplamente utilizados em ambientes de microsserviços.
+
+\section{Monolitos vs Microsserviços}
+
+\subsection{Arquitetura Monolítica}
+Uma arquitetura monolítica, conforme descrito em \cite{Dragoni2017}, é um sistema composto por um único aplicativo que contém todos os componentes necessários para a execução da aplicação. Essa arquitetura é caracterizada por possuir uma única base de código, uma única base de dados e, geralmente, uma única equipe de desenvolvimento.
+
+Segundo \cite{Newman2015}, um sistema monolítico é desenvolvido como uma única unidade de \textit{deploy}, onde todas as funcionalidades são empacotadas e distribuídas juntas. Essa característica simplifica o processo de desenvolvimento inicial, pois elimina a complexidade de coordenação entre múltiplos serviços.
+
+As principais vantagens da arquitetura monolítica incluem a simplicidade de desenvolvimento, teste e implantação. \cite{fowler2014microservices} destaca que sistemas monolíticos são mais fáceis de depurar, já que todo o código está em um único local, facilitando o rastreamento de problemas. Além disso, a consistência transacional é garantida através de propriedades ACID (\textit{Atomicity, Consistency, Isolation, Durability}), proporcionando maior confiabilidade nos dados.
+
+No entanto, essa arquitetura apresenta limitações significativas à medida que o sistema cresce. \cite{richardson2018microservices} identifica que sistemas monolíticos tendem a se tornar difíceis de manter quando atingem um tamanho crítico, resultando em forte acoplamento entre componentes e dificultando a evolução independente de funcionalidades. A escalabilidade também é limitada, pois requer escalar toda a aplicação mesmo quando apenas uma funcionalidade específica demanda mais recursos.
+
+\subsection{Arquitetura de Microsserviços}
+A arquitetura de microsserviços estrutura uma aplicação como uma coleção de serviços fracamente acoplados e altamente coesos. \cite{fowler2014microservices} define microsserviços como uma abordagem para desenvolver uma única aplicação como um conjunto de pequenos serviços, cada um executando em seu próprio processo e comunicando-se por mecanismos leves, como uma API HTTP ou gRPC.
+
+Segundo \cite{Newman2015}, os microsserviços são caracterizados por serem organizados em torno de capacidades de negócio, enfatizarem a entrega de produtos em vez de projetos, possuírem \textit{endpoints} inteligentes e canais de comunicação simples (\textit{dumb pipes}), serem projetados para falhar e apresentarem alta observabilidade. Cada serviço é responsável por uma funcionalidade específica do domínio de negócio e pode ser desenvolvido, testado e implantado de forma independente.
+
+\cite{richardson2018microservices} destaca que a arquitetura de microsserviços oferece diversas vantagens significativas. A escalabilidade independente permite que cada serviço seja dimensionado conforme sua demanda específica, otimizando o uso de recursos. A diversidade tecnológica possibilita que cada serviço utilize o framework ou linguagem mais adequada à sua função, promovendo flexibilidade e inovação. Além disso, o isolamento de falhas garante que problemas em um serviço não afetem todo o sistema.
+
+Por outro lado, essa arquitetura introduz complexidades operacionais e de desenvolvimento. \cite{Dragoni2017} aponta que sistemas baseados em microsserviços requerem infraestrutura robusta para orquestração, monitoramento e comunicação entre serviços. A observabilidade torna-se essencial, uma vez que é necessário acompanhar múltiplos serviços e suas interações de forma distribuída.
+
+A comunicação entre microsserviços pode ser síncrona ou assíncrona. A comunicação síncrona utiliza protocolos como HTTP/REST ou gRPC para chamadas diretas entre serviços, enquanto a comunicação assíncrona emprega mensageria e eventos para promover desacoplamento e aumentar a resiliência do sistema.
+
+Após compreender as diferenças fundamentais entre arquiteturas monolíticas e de microsserviços, é essencial abordar os princípios que garantem a qualidade e confiabilidade desses sistemas distribuídos. Os conceitos de robustez, resiliência e escalabilidade são fundamentais para o sucesso de implementações baseadas em microsserviços.
+
+\section{Princípios de Robustez, Resiliência e Escalabilidade}
+
+\subsection{Robustez}
+A robustez é um atributo fundamental de sistemas distribuídos, representando a capacidade de manter funcionalidades mesmo diante de falhas ou condições adversas. \cite{avizienis2004basic} define robustez como a habilidade de um sistema continuar operando corretamente mesmo quando componentes individuais falham ou operam em condições não ideais.
+
+Em arquiteturas de microsserviços, a robustez é alcançada por meio de estratégias como o princípio \textit{design for failure}, que pressupõe que falhas são inevitáveis e que o sistema deve ser projetado para lidar com elas de forma controlada. \cite{fowler2014circuit} introduz o padrão \textit{Circuit Breaker}, que previne falhas em cascata ao isolar serviços problemáticos e permitir que se recuperem gradualmente.
+
+\subsection{Resiliência}
+A resiliência vai além da robustez, representando a capacidade de um sistema de se adaptar e se recuperar rapidamente de perturbações. \cite{hollnagel2014resilience} define resiliência como a habilidade de um sistema de manter ou restaurar rapidamente um estado estável após uma falha, ajustando-se às mudanças nas condições operacionais.
+
+\cite{reactive2014manifesto} estabelece quatro características fundamentais de sistemas resilientes: responsivos, resilientes, elásticos e orientados a mensagens. A resiliência em microsserviços é frequentemente implementada por meio de padrões como \textit{retry} com \textit{backoff} exponencial, \textit{timeout}, \textit{bulkhead} para isolamento de recursos e \textit{graceful degradation}, no qual o sistema reduz funcionalidades não críticas para preservar operações essenciais.
+
+\subsection{Escalabilidade}
+A escalabilidade refere-se à capacidade de um sistema de lidar com aumentos na carga de trabalho mediante adição de recursos. \cite{bondi2000characteristics} identifica três dimensões principais: escalabilidade de carga, geográfica e administrativa.
+
+Em sistemas distribuídos, a escalabilidade pode ser horizontal (\textit{scale-out}) ou vertical (\textit{scale-up}). \cite{richardson2018microservices} destaca que microsserviços favorecem a escalabilidade horizontal, pois cada serviço pode ser escalado de forma independente. O teorema CAP (\textit{Consistency, Availability, Partition Tolerance}), proposto por \cite{brewer2012cap}, estabelece que sistemas distribuídos podem garantir no máximo duas dessas três propriedades simultaneamente, influenciando decisões arquiteturais relacionadas à escalabilidade e consistência.
+
+Tendo estabelecido os princípios fundamentais de robustez, resiliência e escalabilidade, é necessário abordar como esses conceitos se materializam na prática através de padrões de comunicação eficazes. A comunicação entre serviços é um aspecto crítico que determina o sucesso de arquiteturas de microsserviços.
+
+\section{Padrões de Comunicação}
+
+A comunicação entre serviços é um aspecto crítico em arquiteturas de microsserviços, influenciando diretamente a performance, resiliência e manutenibilidade do sistema. \cite{hohpe2003enterprise} estabelece que padrões de comunicação bem definidos são essenciais para criar sistemas distribuídos eficazes e confiáveis.
+
+\subsection{Comunicação Síncrona}
+A comunicação síncrona envolve chamadas diretas entre serviços onde o cliente aguarda uma resposta antes de continuar a execução. \cite{fielding2000architectural} introduziu o estilo arquitetural REST (Representational State Transfer), que se tornou amplamente adotado para comunicação síncrona em microsserviços devido à sua simplicidade e compatibilidade com HTTP.
+
+O protocolo gRPC, desenvolvido pelo Google, oferece uma alternativa de alta performance para comunicação síncrona. \cite{grpc2023} destaca que gRPC utiliza HTTP/2 como transporte e Protocol Buffers para serialização, proporcionando melhor performance e recursos avançados como streaming bidirecional e multiplexação.
+
+A comunicação síncrona apresenta vantagens como simplicidade conceitual, facilidade de debug e garantia de resposta imediata. No entanto, pode criar acoplamento temporal entre serviços e ser vulnerável a falhas em cascata quando serviços dependentes ficam indisponíveis.
+
+\subsection{Comunicação Assíncrona}
+A comunicação assíncrona permite que serviços troquem mensagens sem bloquear a execução, melhorando a resiliência e escalabilidade do sistema. \cite{michelson2006event} define arquitetura orientada a eventos como um padrão onde componentes comunicam-se através da produção e consumo de eventos.
+
+\cite{fowler2005event} introduz o padrão Event Sourcing, onde o estado de uma aplicação é determinado por uma sequência de eventos que ocorreram ao longo do tempo. Este padrão facilita a auditoria, permite reconstruir estados históricos e melhora a resiliência através da persistência de eventos.
+
+A comunicação assíncrona oferece benefícios significativos: desacoplamento temporal entre serviços, melhor tolerância a falhas e capacidade de processar picos de carga através de buffers de mensagens. Contudo, introduz complexidades como eventual consistency, necessidade de tratamento de mensagens duplicadas e maior dificuldade de debug devido à natureza distribuída.
+
+Além dos padrões de comunicação, existem diversos padrões arquiteturais e práticas de desenvolvimento que são amplamente utilizados na implementação de sistemas baseados em microsserviços. Estes padrões complementam os conceitos teóricos apresentados anteriormente, oferecendo diretrizes práticas para a construção de sistemas distribuídos robustos e escaláveis.
+
+\section{Padrões e Práticas Comumente Utilizados em Microsserviços}
+
+\subsection{Padrões Arquiteturais Fundamentais}
+
+\subsubsection{Domain-Driven Design}
+Domain-Driven Design (DDD) é uma abordagem metodológica para o desenvolvimento de software complexo que enfatiza a colaboração contínua entre desenvolvedores e especialistas do domínio para criar modelos de software que refletem com precisão as complexidades do domínio de negócios. \cite{vernon2016ddd} apresenta uma visão prática e destilada dos princípios fundamentais do DDD, destacando sua aplicação em sistemas modernos.
+
+O DDD busca alinhar a estrutura e a linguagem do software com as necessidades e processos reais da organização, promovendo uma compreensão compartilhada e uma comunicação eficaz entre todas as partes envolvidas. Esta abordagem é particularmente valiosa em arquiteturas de microsserviços, onde o DDD oferece diretrizes essenciais para decompor sistemas complexos em componentes menores e mais gerenciáveis.
+
+Um conceito central no DDD é o \textit{Bounded Context}, que define um limite claro dentro do qual um modelo específico é válido. \cite{vernon2016ddd} destaca que cada \textit{Bounded Context} permite que diferentes partes do sistema evoluam de forma independente, mantendo a coesão interna. Em microsserviços, cada serviço tipicamente representa um \textit{Bounded Context} específico, facilitando a manutenção, escalabilidade e implementação de mudanças.
+
+A \textit{Linguagem Ubíqua} é outro pilar fundamental do DDD, referindo-se a um vocabulário comum desenvolvido e utilizado por desenvolvedores e especialistas do domínio dentro de um \textit{Bounded Context}. Esta linguagem compartilhada assegura que todos os membros da equipe tenham uma compreensão consistente dos conceitos e processos do domínio, reduzindo ambiguidades e melhorando a comunicação. Ao incorporar essa linguagem diretamente no código, o DDD promove um alinhamento mais estreito entre o software e o domínio de negócios.
+
+O DDD introduz também o conceito de \textit{Agregados}, que são clusters de objetos de domínio tratados como uma unidade única para fins de consistência de dados. Cada agregado possui uma \textit{Raiz do Agregado}, que é a entidade principal responsável por manter a integridade e a consistência dos dados dentro do agregado. Esta estrutura ajuda a gerenciar a complexidade do domínio, garantindo que as invariantes de negócios sejam mantidas.
+
+\cite{richardson2018microservices} destaca que a aplicação do DDD em arquiteturas de microsserviços permite que as equipes desenvolvam serviços que são não apenas tecnicamente sólidos, mas também profundamente enraizados no contexto de negócios que servem. Ao focar na modelagem precisa do domínio e na criação de contextos delimitados bem definidos, o DDD facilita a construção de sistemas que são mais flexíveis, adaptáveis e alinhados com as necessidades estratégicas da organização.
+
+\subsubsection{Clean Architecture}
+Clean Architecture, proposta por Robert C. Martin, estabelece princípios para organizar código de forma que as regras de negócio sejam independentes de frameworks, interfaces de usuário, bancos de dados e agentes externos. Esta arquitetura é particularmente relevante em microsserviços, onde cada serviço deve manter alta coesão interna e baixo acoplamento externo.
+
+A Clean Architecture organiza o código em camadas concêntricas, onde as regras de negócio ficam no centro, protegidas de dependências externas. \cite{fowler2002patterns} complementa esta abordagem com padrões como Repository e Service Layer, que facilitam a separação entre lógica de negócio e infraestrutura.
+
+Em microsserviços, a Clean Architecture permite que cada serviço evolua independentemente, mantendo suas regras de negócio isoladas de mudanças em tecnologias de infraestrutura ou interfaces externas. Esta independência é crucial para a escalabilidade e manutenibilidade de sistemas distribuídos.
+
+\subsubsection{Arquitetura Hexagonal}
+A Arquitetura Hexagonal, também conhecida como Ports and Adapters, foi introduzida por \cite{cockburn2005hexagonal} como uma abordagem para isolar a lógica de negócio de detalhes de infraestrutura. Esta arquitetura é especialmente valiosa em microsserviços, onde serviços precisam se comunicar através de diferentes protocolos e tecnologias.
+
+A arquitetura hexagonal define ports (interfaces) que representam as necessidades da aplicação, e adapters que implementam essas interfaces usando tecnologias específicas. Esta separação permite que microsserviços sejam testados independentemente de suas dependências externas e facilita a substituição de tecnologias sem afetar a lógica de negócio.
+
+\cite{richardson2018microservices} destaca que a arquitetura hexagonal é particularmente eficaz em microsserviços porque permite que cada serviço defina claramente suas interfaces (ports) e implemente adapters específicos para diferentes tipos de comunicação, seja HTTP, mensageria ou acesso a banco de dados.
+
+Além dos padrões arquiteturais fundamentais, existem padrões específicos para organização e comunicação que são essenciais para a implementação eficaz de microsserviços. Estes padrões abordam questões práticas de estruturação interna dos serviços e coordenação entre eles.
+
+\subsection{Padrões de Organização e Comunicação}
+
+\subsubsection{Arquitetura em Camadas}
+A Arquitetura em Camadas é um padrão fundamental que organiza o código em camadas horizontais, cada uma com responsabilidades específicas. Em microsserviços, este padrão é frequentemente implementado com camadas como Presentation, Business Logic, Data Access e Infrastructure.
+
+\cite{fowler2002patterns} estabelece que a arquitetura em camadas promove a separação de responsabilidades, facilitando a manutenção e evolução do código. Em microsserviços, cada serviço pode implementar suas próprias camadas de acordo com suas necessidades específicas, mantendo consistência interna enquanto permite diversidade entre serviços.
+
+A arquitetura em camadas facilita a testabilidade de microsserviços, permitindo que cada camada seja testada independentemente. Além disso, este padrão suporta a evolução gradual de serviços, onde mudanças em uma camada não afetam necessariamente outras camadas.
+
+\subsubsection{Event-Driven Architecture}
+Event-Driven Architecture (EDA) é um padrão arquitetural onde componentes comunicam-se através da produção e consumo de eventos. \cite{michelson2006event} define EDA como uma abordagem onde eventos são os elementos centrais de comunicação entre componentes de software.
+
+Em microsserviços, a EDA oferece benefícios significativos de desacoplamento e escalabilidade. \cite{fowler2005event} destaca que sistemas orientados a eventos são naturalmente assíncronos, permitindo que serviços processem eventos em seu próprio ritmo e se recuperem de falhas sem afetar outros serviços.
+
+A EDA facilita a implementação de padrões como Event Sourcing e CQRS, onde eventos representam mudanças de estado e permitem reconstrução de dados históricos. Esta abordagem é particularmente valiosa em sistemas de e-commerce, onde eventos como "pedido criado" ou "pagamento processado" podem ser consumidos por múltiplos serviços para diferentes propósitos.
+
+\subsubsection{API Gateway Pattern}
+O padrão API Gateway atua como ponto único de entrada para clientes que consomem serviços de microsserviços. \cite{richardson2018microservices} define o API Gateway como um serviço que fornece uma API única para clientes, roteando requisições para microsserviços apropriados e agregando resultados quando necessário.
+
+O API Gateway oferece várias funcionalidades essenciais em arquiteturas de microsserviços: roteamento de requisições, autenticação e autorização centralizadas, rate limiting, monitoramento e logging. Esta centralização simplifica a experiência do cliente enquanto mantém a independência dos microsserviços.
+
+\cite{fowler2014microservices} destaca que o API Gateway permite que microsserviços evoluam independentemente, pois mudanças na implementação interna dos serviços não afetam os clientes, que continuam interagindo através da interface estável do gateway.
+
+Complementando os padrões de organização e comunicação, existem princípios específicos de separação de responsabilidades que são fundamentais para a criação de sistemas distribuídos bem estruturados. Estes padrões focam na clareza e eficiência das operações de leitura e escrita em microsserviços.
+
+\subsection{Padrões de Separação de Responsabilidades}
+
+\subsubsection{CQS (Command Query Separation)}
+O princípio Command Query Separation (CQS) foi introduzido por Bertrand Meyer e estabelece que métodos devem ser classificados como comandos (que modificam estado) ou consultas (que retornam dados), mas nunca ambos. \cite{meyer1997object} enfatiza que esta separação melhora a clareza do código e facilita a manutenção.
+
+Em microsserviços, o CQS promove a criação de interfaces claras e previsíveis. Comandos representam operações que alteram o estado do sistema, como criar usuário ou processar pedido, enquanto consultas retornam informações sem causar efeitos colaterais. Esta separação facilita a implementação de cache, otimização de consultas e testes unitários.
+
+\cite{fowler2002patterns} destaca que o CQS é fundamental para a implementação de padrões mais avançados como CQRS, fornecendo a base conceitual para separar completamente operações de leitura e escrita em sistemas distribuídos.
+
+O princípio CQS evoluiu para padrões mais sofisticados que são especialmente relevantes em arquiteturas de microsserviços, onde a separação completa entre operações de leitura e escrita pode oferecer benefícios significativos de performance e escalabilidade.
+
+\subsubsection{CQRS (Command Query Responsibility Segregation)}
+CQRS é uma evolução do princípio CQS, onde comandos e consultas são completamente separados em modelos distintos. \cite{young2010cqrs} introduz CQRS como uma abordagem que permite otimizações específicas para operações de leitura e escrita, facilitando a escalabilidade e manutenibilidade de sistemas complexos.
+
+Em microsserviços, CQRS oferece benefícios significativos de escalabilidade. O modelo de escrita pode ser otimizado para consistência e integridade de dados, enquanto o modelo de leitura pode ser otimizado para performance e disponibilidade. Esta separação permite que cada modelo evolua independentemente conforme as necessidades específicas.
+
+\cite{fowler2005event} destaca que CQRS é frequentemente combinado com Event Sourcing, onde eventos representam mudanças de estado e são utilizados para manter tanto o modelo de escrita quanto múltiplos modelos de leitura otimizados para diferentes necessidades de consulta.
+
+A implementação de CQRS em microsserviços facilita a criação de sistemas altamente escaláveis, onde operações de leitura podem ser distribuídas através de múltiplas réplicas enquanto operações de escrita mantêm consistência através de um modelo centralizado.
+
+Este capítulo apresentou os fundamentos teóricos essenciais para o desenvolvimento de sistemas baseados em microsserviços. Foram abordados os conceitos fundamentais que diferenciam arquiteturas monolíticas de microsserviços, os princípios de robustez, resiliência e escalabilidade que garantem a qualidade desses sistemas, os padrões de comunicação que facilitam a interação entre serviços, e as práticas arquiteturais mais utilizadas na implementação de microsserviços.
+
+Os conceitos apresentados fornecem uma base sólida para a compreensão dos desafios e oportunidades inerentes ao desenvolvimento de sistemas distribuídos modernos. A combinação adequada desses princípios e padrões permite a criação de sistemas que são não apenas tecnicamente robustos, mas também alinhados com as necessidades de negócio e preparados para evolução contínua.
+
+Os próximos capítulos deste trabalho aplicarão esses conceitos teóricos na implementação prática de um sistema de e-commerce baseado em microsserviços, demonstrando como os princípios discutidos se materializam em soluções concretas e eficazes.

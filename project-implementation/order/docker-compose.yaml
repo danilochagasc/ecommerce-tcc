@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+
+  order-app:
+    build: .
+    container_name: order-app-local
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING_R2DBC_URL: r2dbc:postgresql://postgres-order:5432/orderdb
+      SPRING_R2DBC_USERNAME: postgres
+      SPRING_R2DBC_PASSWORD: postgres
+    ports:
+      - "8084:8080"
+    depends_on:
+      - postgres-order
+    networks:
+      - order-network
+
+  postgres-order:
+    container_name: order-postgres-local
+    image: postgres:17
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: orderdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - order-network
+
+  prometheus:
+    container_name: order-prometheus-local
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9094:9090"
+    networks:
+      - order-network
+
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: order-grafana-local
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_FEATURE_TOGGLES_ENABLE=accesscontrol
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3004:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - order-network
+
+networks:
+  order-network:
+    driver: bridge

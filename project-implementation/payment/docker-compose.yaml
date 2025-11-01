@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+
+  payment-app:
+    build: .
+    container_name: payment-app-local
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING_R2DBC_URL: r2dbc:postgresql://postgres-payment:5432/paymentdb
+      SPRING_R2DBC_USERNAME: postgres
+      SPRING_R2DBC_PASSWORD: postgres
+    ports:
+      - "8085:8080"
+    depends_on:
+      - postgres-payment
+    networks:
+      - payment-network
+
+  postgres-payment:
+    container_name: payment-postgres-local
+    image: postgres:17
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_DB: paymentdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - payment-network
+
+  prometheus:
+    container_name: payment-prometheus-local
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9095:9090"
+    networks:
+      - payment-network
+
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: payment-grafana-local
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_FEATURE_TOGGLES_ENABLE=accesscontrol
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3005:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - payment-network
+
+networks:
+  payment-network:
+    driver: bridge

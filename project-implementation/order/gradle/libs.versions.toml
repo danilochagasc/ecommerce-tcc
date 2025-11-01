@@ -1,0 +1,51 @@
+[versions]
+compiler-kotlin = "2.1"
+compiler-java = "17"
+kotlin = "2.0.21"
+kotlinter = "4.4.1"
+kotlin-logging = "7.0.7"
+spring-boot = "3.5.5"
+kotlinx-coroutines = "1.10.1"
+kotlinx-serialization-json = "1.8.0"
+valiktor = "0.12.0"
+kotest = "5.8.1"
+kotest-extensions = "1.1.2"
+mockk = "1.14.2"
+jdbc-postgresql = "42.7.7"
+flyway = "10.20.0"
+aws-sdk-bom = "2.23.17"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
+
+[libraries]
+spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-starter = {module = "org.springframework.boot:spring-boot-starter"}
+spring-boot-starter-test = {module = "org.springframework.boot:spring-boot-starter-test"}
+spring-boot-starter-core = { module = "org.springframework.boot:spring-boot-starter" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus"}
+kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
+kotlin-reflect = {module = "org.jetbrains.kotlin:kotlin-reflect"}
+valiktor-core = {module = "org.valiktor:valiktor-core", version.ref = "valiktor"}
+kotest-runner-junit5 = {module = "io.kotest:kotest-runner-junit5", version.ref = "kotest"}
+kotest-assertions-core = {module = "io.kotest:kotest-assertions-core", version.ref = "kotest"}
+kotest-framework-engine = {module = "io.kotest:kotest-framework-engine", version.ref = "kotest"}
+kotest-extensions-spring = {module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotest-extensions"}
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+mockk = {module = "io.mockk:mockk", version.ref = "mockk"}
+spring-boot-starter-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc" }
+r2dbc-pool = { module = "io.r2dbc:r2dbc-pool" }
+r2dbc-postgresql-driver = { module = "org.postgresql:r2dbc-postgresql" }
+jdbc-postgresql = {module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql"}
+flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+aws-sdk-bom = { module = "software.amazon.awssdk:bom", version.ref = "aws-sdk-bom" }
+aws-sdk-s3 = { module = "software.amazon.awssdk:s3" }
+aws-sdk-netty-client = { module = "software.amazon.awssdk:netty-nio-client" }
