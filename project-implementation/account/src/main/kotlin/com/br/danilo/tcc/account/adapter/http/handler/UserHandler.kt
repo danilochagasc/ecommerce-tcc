@@ -8,6 +8,7 @@ import com.br.danilo.tcc.account.core.application.user.command.CreateUserCommand
 import com.br.danilo.tcc.account.core.application.user.command.UpdateUserCommand
 import com.br.danilo.tcc.account.core.domain.user.UserId
 import kotlinx.coroutines.reactive.awaitSingle
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -25,14 +26,18 @@ class UserHandler(
     suspend fun findAll(req: ServerRequest): ServerResponse = ok().bodyValueAndAwait(service.findAll())
 
     suspend fun findByLogin(req: ServerRequest): ServerResponse {
-        val id = UserId(req.principal().awaitSingle().name)
+        val authentication = ReactiveSecurityContextHolder.getContext().awaitSingle().authentication
+        val id = UserId(authentication.name)
         return ok().bodyValueAndAwait(service.findById(id))
     }
 
     suspend fun create(req: ServerRequest): ServerResponse {
         val command = req.awaitBody<CreateUserCommand>()
-        val id = service.create(command)
-        return created(req.uriBuilder().path("/{id}").build(id)).buildAndAwait()
+        service.create(command)
+        // Get the created user by email to return the ID
+        val createdUser = service.findByEmail(command.email)
+            ?: throw RuntimeException("User was not created")
+        return created(req.uriBuilder().path("/{id}").build(createdUser.id)).buildAndAwait()
     }
 
     suspend fun update(req: ServerRequest): ServerResponse {

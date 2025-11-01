@@ -13,6 +13,9 @@ kotest-extensions = "1.1.2"
 mockk = "1.14.2"
 wiremock = "3.0.1"
 flyway = "10.20.0"
+springmockk = "3.0.1"
+testcontainers = "1.19.3"
+jackson-module-kotlin = "2.17.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -42,3 +45,8 @@ mockk = {module = "io.mockk:mockk", version.ref = "mockk"}
 wiremock = {module = "org.wiremock:wiremock-standalone", version.ref = "wiremock"}
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
 redis-reactive = { module = "org.springframework.boot:spring-boot-starter-data-redis-reactive" }
+valiktor-test = { module = "org.valiktor:valiktor-test", version.ref = "valiktor" }
+springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-module-kotlin" }

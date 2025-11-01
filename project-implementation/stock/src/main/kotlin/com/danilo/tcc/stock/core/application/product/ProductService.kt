@@ -17,8 +17,9 @@ class ProductService(
     private val repository: ProductRepository,
     private val imageRepository: ProductImageRepository,
 ) {
-    suspend fun findById(id: ProductId) = repository.findById(id)?.toQuery()
-        ?: throw ProductNotFoundException(id)
+    suspend fun findById(id: ProductId) =
+        repository.findById(id)?.toQuery()
+            ?: throw ProductNotFoundException(id)
 
     suspend fun findAll() = repository.findAll().map { it.toQuery() }
 

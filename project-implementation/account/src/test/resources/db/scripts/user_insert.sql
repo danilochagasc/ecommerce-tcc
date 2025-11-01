@@ -1,0 +1,2 @@
+INSERT INTO "user" (id, name, last_name, cpf, email, password, phone, birth_date, role) VALUES ('8b1c7a4d-6e58-465e-bc34-b43cf7649b87', 'John', 'Doe', '12345678901', 'john.doe@example.com', 'hashedPassword', '11999999999', '1990-01-01', 'USER'); INSERT INTO "user" (id, name, last_name, cpf, email, password, phone, birth_date, role) VALUES ('b06b2db2-14b3-4880-856b-af5c5c01c999', 'Jane', 'Smith', '98765432100', 'jane.smith@example.com', 'hashedPassword', '11888888888', '1995-05-15', 'USER');
+

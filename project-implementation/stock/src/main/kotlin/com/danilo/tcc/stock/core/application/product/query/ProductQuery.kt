@@ -12,12 +12,13 @@ data class ProductQuery(
     val categoryId: String,
 )
 
-fun Product.toQuery() = ProductQuery(
-    id = this.id.toString(),
-    name = this.name,
-    description = this.description,
-    imageUrl = this.imageUrl,
-    price = this.price,
-    quantity = this.quantity,
-    categoryId = this.categoryId.toString(),
-)
+fun Product.toQuery() =
+    ProductQuery(
+        id = this.id.toString(),
+        name = this.name,
+        description = this.description,
+        imageUrl = this.imageUrl,
+        price = this.price,
+        quantity = this.quantity,
+        categoryId = this.categoryId.toString(),
+    )

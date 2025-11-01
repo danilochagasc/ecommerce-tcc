@@ -37,6 +37,7 @@ dependencies {
 
     //validation
     implementation(libs.valiktor.core)
+    testImplementation(libs.valiktor.test)
 
     //logging
     implementation(libs.kotlin.logging)
@@ -60,6 +61,9 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.wiremock)
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    testImplementation(libs.springmockk)
+    testImplementation(libs.testcontainers)
+    testImplementation(libs.testcontainers.junit.jupiter)
 
 }
 

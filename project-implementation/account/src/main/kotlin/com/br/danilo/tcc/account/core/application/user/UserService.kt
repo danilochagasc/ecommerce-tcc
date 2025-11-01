@@ -25,6 +25,8 @@ class UserService(
 
     suspend fun findById(id: UserId) = returnUserIfExists(id).toPublicQuery()
 
+    suspend fun findByEmail(email: String) = repository.findByEmail(email)?.toPublicQuery()
+
     suspend fun create(command: CreateUserCommand) {
         repository.findByEmail(command.email)?.let {
             throw UserAlreadyExistsException(command.email)

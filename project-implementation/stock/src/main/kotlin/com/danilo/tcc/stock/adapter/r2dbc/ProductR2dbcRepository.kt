@@ -17,6 +17,7 @@ import org.springframework.r2dbc.core.await
 import org.springframework.r2dbc.core.awaitOneOrNull
 import org.springframework.r2dbc.core.flow
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 class ProductR2dbcRepository(
@@ -89,12 +90,12 @@ class ProductR2dbcRepository(
 
     private fun Row.toProduct() =
         Product(
-            id = ProductId(this.get<String>("id")),
+            id = ProductId(this.get<UUID>("id")),
             name = this.get<String>("name"),
             description = this.get<String>("description"),
             imageUrl = this.get<String>("image_url"),
             price = this.get<Double>("price"),
             quantity = this.get<Int>("quantity"),
-            categoryId = CategoryId(this.get<String>("category_id")),
+            categoryId = CategoryId(this.get<UUID>("category_id")),
         )
 }

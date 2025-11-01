@@ -4,7 +4,7 @@ import com.br.danilo.tcc.checkout.core.domain.coupon.DiscountType.FIXED
 import com.br.danilo.tcc.checkout.core.domain.coupon.DiscountType.PERCENTAGE
 import org.valiktor.functions.isGreaterThan
 import org.valiktor.functions.isLessThanOrEqualTo
-import org.valiktor.functions.isNotEmpty
+import org.valiktor.functions.isNotBlank
 import org.valiktor.functions.isNotNull
 import org.valiktor.validate
 import kotlin.time.Clock.System.now
@@ -22,14 +22,14 @@ data class Coupon(
 
     private fun validate() {
         validate(this) {
-            validate(Coupon::code).isNotEmpty()
+            validate(Coupon::code).isNotBlank()
             validate(Coupon::discountType).isNotNull()
             validate(Coupon::value).isNotNull().isGreaterThan(0.0)
             when (discountType) {
                 PERCENTAGE -> validate(Coupon::value).isGreaterThan(0.0).isLessThanOrEqualTo(100.0)
                 FIXED -> validate(Coupon::value).isGreaterThan(0.0)
             }
-            validate(Coupon::expiresAt).isNotNull().isGreaterThan(now())
+            validate(Coupon::expiresAt).isNotNull()
         }
     }
 

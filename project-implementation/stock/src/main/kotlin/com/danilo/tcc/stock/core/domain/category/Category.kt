@@ -11,8 +11,7 @@ data class Category(
     val id: CategoryId,
     val name: String,
 ) {
-
-    init{
+    init {
         validate()
     }
 

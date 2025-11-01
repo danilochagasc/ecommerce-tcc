@@ -2,20 +2,21 @@ package com.danilo.tcc.stock.core.application.category
 
 import com.danilo.tcc.stock.core.application.category.command.CreateCategoryCommand
 import com.danilo.tcc.stock.core.application.category.command.UpdateCategoryCommand
+import com.danilo.tcc.stock.core.application.category.query.toQuery
 import com.danilo.tcc.stock.core.domain.category.Category
 import com.danilo.tcc.stock.core.domain.category.CategoryAlreadyExistsException
 import com.danilo.tcc.stock.core.domain.category.CategoryId
 import com.danilo.tcc.stock.core.domain.category.CategoryNotFoundException
 import com.danilo.tcc.stock.core.domain.category.CategoryRepository
 import org.springframework.stereotype.Service
-import com.danilo.tcc.stock.core.application.category.query.toQuery
 
 @Service
 class CategoryService(
     private val repository: CategoryRepository,
 ) {
-    suspend fun findById(id: CategoryId) = repository.findById(id)?.toQuery()
-        ?: throw CategoryNotFoundException(id)
+    suspend fun findById(id: CategoryId) =
+        repository.findById(id)?.toQuery()
+            ?: throw CategoryNotFoundException(id)
 
     suspend fun findAll() = repository.findAll().map { it.toQuery() }
 
