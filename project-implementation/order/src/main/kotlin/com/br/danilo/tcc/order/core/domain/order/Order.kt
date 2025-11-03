@@ -24,10 +24,6 @@ data class Order(
     val createdAt: Instant,
     val updatedAt: Instant,
 ) {
-    init {
-        validate()
-    }
-
     private fun validate() {
         validate(this) {
             validate(Order::id).isNotNull()
@@ -58,14 +54,14 @@ data class Order(
         ) = Order(
             id = id,
             accountId = accountId,
-            total = items.sumOf { it.price },
+            total = items.sumOf { it.price * it.quantity },
             coupon = coupon,
             items = items,
             status = OrderStatusEnum.CREATED,
             createdAt = now(),
             updatedAt = now(),
             paymentDetails = paymentDetails,
-        )
+        ).apply { validate() }
     }
 
     fun insertItems(items: List<Item>) = copy(items = items)

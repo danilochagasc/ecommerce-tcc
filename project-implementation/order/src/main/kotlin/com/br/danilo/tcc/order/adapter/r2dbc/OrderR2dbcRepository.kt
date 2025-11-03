@@ -82,8 +82,8 @@ class OrderR2dbcRepository(
             .bind("total", order.total)
             .bindOrNull("coupon", order.coupon)
             .bind("status", order.status.name)
-            .bind("payment_type", order.paymentDetails.paymentType.name)
-            .bind("updated_at", order.updatedAt)
+            .bind("paymentType", order.paymentDetails.paymentType.name)
+            .bind("updatedAt", order.updatedAt.toJavaInstant())
             .await()
     }
 

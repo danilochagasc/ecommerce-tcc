@@ -31,8 +31,8 @@ data class Address(
             validate(Address::number).isNotBlank()
             validate(Address::neighborhood).isNotBlank()
             validate(Address::city).isNotBlank()
-            validate(Address::state).isNotBlank().hasSize(2)
-            validate(Address::zipCode).isNotBlank().hasSize(8)
+            validate(Address::state).isNotBlank().hasSize(min = 2, max = 2)
+            validate(Address::zipCode).isNotBlank().hasSize(min = 8, max = 8)
         }
     }
 

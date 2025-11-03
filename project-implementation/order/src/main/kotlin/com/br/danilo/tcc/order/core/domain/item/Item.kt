@@ -16,10 +16,6 @@ data class Item(
     val price: Double,
     val quantity: Int,
 ) {
-    init {
-        validate()
-    }
-
     private fun validate() {
         validate(this) {
             validate(Item::id).isNotNull()
@@ -42,6 +38,6 @@ data class Item(
             name = name,
             price = price,
             quantity = quantity,
-        )
+        ).apply { validate() }
     }
 }

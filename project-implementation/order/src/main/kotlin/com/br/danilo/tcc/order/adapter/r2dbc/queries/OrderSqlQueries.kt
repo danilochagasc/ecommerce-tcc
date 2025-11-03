@@ -38,12 +38,12 @@ object OrderSqlQueries {
                    coupon = :coupon,
                    status = :status,
                    payment_type = :paymentType,
-                   updated_at = :updated_at,
+                   updated_at = :updatedAt
              WHERE id = :id
         """
 
     fun deleteOrder() =
-        """id
+        """
             DELETE FROM "order"
              WHERE id = :id
         """

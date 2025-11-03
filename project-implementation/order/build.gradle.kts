@@ -63,6 +63,19 @@ dependencies {
     testImplementation(libs.kotest.framework.engine)
     testImplementation(libs.kotest.extensions.spring)
     testImplementation(libs.mockk)
+    testImplementation(libs.wiremock)
+    testImplementation(libs.valiktor.test)
+    testImplementation(libs.springmockk)
+    testImplementation(libs.testcontainers)
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.postgresql)
+    testImplementation(libs.testcontainers.localstack)
+    testImplementation(libs.jackson.module.kotlin)
+    
+    // Flyway for tests (to run migrations programmatically)
+    testImplementation("org.flywaydb:flyway-core:${libs.versions.flyway.get()}")
+    testImplementation(libs.flyway.postgresql)
+    testImplementation(libs.jdbc.postgresql)
 }
 
 tasks{
@@ -102,7 +115,6 @@ tasks{
 
     test {
         useJUnitPlatform()
-        dependsOn(flywayMigrate)
         jvmArgs(
             "--add-opens=java.base/java.lang=ALL-UNNAMED",
             "--add-opens=java.base/java.util=ALL-UNNAMED"

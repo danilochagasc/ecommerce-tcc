@@ -14,6 +14,10 @@ mockk = "1.14.2"
 jdbc-postgresql = "42.7.7"
 flyway = "10.20.0"
 aws-sdk-bom = "2.23.17"
+wiremock = "3.0.1"
+springmockk = "3.0.1"
+testcontainers = "1.19.3"
+jackson-module-kotlin = "2.17.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -40,6 +44,14 @@ kotest-framework-engine = {module = "io.kotest:kotest-framework-engine", version
 kotest-extensions-spring = {module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotest-extensions"}
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 mockk = {module = "io.mockk:mockk", version.ref = "mockk"}
+wiremock = {module = "org.wiremock:wiremock-standalone", version.ref = "wiremock"}
+valiktor-test = { module = "org.valiktor:valiktor-test", version.ref = "valiktor" }
+springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-localstack = { module = "org.testcontainers:localstack", version.ref = "testcontainers" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-module-kotlin" }
 spring-boot-starter-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc" }
 r2dbc-pool = { module = "io.r2dbc:r2dbc-pool" }
 r2dbc-postgresql-driver = { module = "org.postgresql:r2dbc-postgresql" }

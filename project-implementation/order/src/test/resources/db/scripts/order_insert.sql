@@ -1,0 +1,4 @@
+INSERT INTO "order" (id, account_id, total, coupon, status, payment_type, created_at, updated_at) VALUES 
+('550e8400-e29b-41d4-a716-446655440000', '123e4567-e89b-12d3-a456-426614174000', 150.0, 'DISCOUNT10', 'CREATED', 'PIX', '2024-01-01 10:00:00', '2024-01-01 10:00:00'),
+('660e8400-e29b-41d4-a716-446655440001', '123e4567-e89b-12d3-a456-426614174001', 200.0, NULL, 'PAID', 'CREDIT', '2024-01-02 11:00:00', '2024-01-02 11:30:00');
+

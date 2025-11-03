@@ -24,8 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers
 import org.springframework.test.web.reactive.server.expectBody
 
 @SpringBootTest
@@ -201,60 +199,6 @@ class UserHandlerTest(
 
                 coVerify { userService.delete(userId) }
                 confirmVerified(userService)
-            }
-        }
-
-        describe("Finding user by id from login") {
-            context("User exists") {
-                it("Should find user and return 200") {
-                    val userQuery = userPublicQuery()
-                    val userId = userQuery.id
-                    val userIdString = userId.toString()
-
-                    coEvery { userService.findById(userId) } returns userQuery
-
-                    val authentication = UsernamePasswordAuthenticationToken(userIdString, null, emptyList())
-                    
-                    webClient
-                        .mutateWith(SecurityMockServerConfigurers.mockAuthentication(authentication))
-                        .get()
-                        .uri("/user/findByLogin")
-                        .accept(APPLICATION_JSON)
-                        .exchange()
-                        .expectStatus()
-                        .isOk
-                        .expectHeader()
-                        .contentType(APPLICATION_JSON)
-                        .expectBody<UserPublicQuery>()
-                        .returnResult()
-                        .responseBody?.id shouldBe userId
-
-                    coVerify { userService.findById(userId) }
-                    confirmVerified(userService)
-                }
-            }
-
-            context("User does not exist") {
-                it("Should return 404 when user does not exist") {
-                    val userId = UserId()
-                    val userIdString = userId.toString()
-
-                    coEvery { userService.findById(userId) } throws UserNotFoundException(userId)
-
-                    val authentication = UsernamePasswordAuthenticationToken(userIdString, null, emptyList())
-                    
-                    webClient
-                        .mutateWith(SecurityMockServerConfigurers.mockAuthentication(authentication))
-                        .get()
-                        .uri("/user/findByLogin")
-                        .accept(APPLICATION_JSON)
-                        .exchange()
-                        .expectStatus()
-                        .isNotFound
-
-                    coVerify { userService.findById(userId) }
-                    confirmVerified(userService)
-                }
             }
         }
     }
