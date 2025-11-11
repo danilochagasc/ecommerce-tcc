@@ -13,12 +13,11 @@ No contexto de plataformas de e-commerce, esses desafios tornam-se ainda mais ev
 
 \section{Definição do Problema}
 
-Com o avanço das tecnologias e o aumento da complexidade das aplicações web, surgem novos desafios relacionados à forma como os sistemas são projetados, desenvolvidos e mantidos. No caso de plataformas de e-commerce, a necessidade de lidar com grande volume de requisições, atualizações frequentes e integração com diversos serviços externos evidencia a importância de arquiteturas escaláveis e resilientes. Nesse contexto, a arquitetura monolítica, embora simples em sua concepção inicial, tende a se tornar rígida e difícil de evoluir à medida que o sistema cresce.
+O crescimento das aplicações web e o aumento da sua complexidade exigem arquiteturas mais robustas, escaláveis e fáceis de evoluir. Em sistemas de e-commerce, que lidam com alto volume de acessos, constantes atualizações e integração com diversos serviços externos, esses desafios se tornam ainda mais evidentes. Nesse cenário, a arquitetura monolítica, embora simples no início, costuma se tornar inflexível e difícil de manter conforme o sistema cresce.
 
-A arquitetura de microsserviços surge como uma alternativa a esse modelo, propondo a decomposição do sistema em módulos menores e independentes. Apesar de suas vantagens, como a escalabilidade e a flexibilidade tecnológica, sua adoção requer o domínio de novas práticas de desenvolvimento, orquestração e observabilidade. A ausência de um planejamento adequado pode resultar em um sistema distribuído complexo, difícil de manter e sujeito a falhas de comunicação entre serviços.
+A arquitetura de microsserviços surge como uma alternativa, ao dividir o sistema em módulos menores e independentes. Essa abordagem oferece benefícios como escalabilidade e liberdade tecnológica, mas também traz novos desafios relacionados a desenvolvimento, orquestração, monitoramento e comunicação entre serviços. Sem planejamento adequado, o sistema pode se tornar ainda mais complexo e difícil de manter.
 
-Assim, o problema central deste trabalho consiste em compreender de que forma uma arquitetura baseada em microsserviços pode ser projetada e implementada de maneira eficiente em um sistema de e-commerce, de modo a garantir robustez, resiliência e escalabilidade, ao mesmo tempo em que se mantém viável em termos de desenvolvimento e manutenção. A partir dessa análise, busca-se relatar a experiência prática de implementação dessa abordagem, identificando os desafios enfrentados e as soluções adotadas durante o processo.
-
+Diante disso, o problema central deste trabalho é compreender como projetar e implementar uma arquitetura de microsserviços de forma eficiente em um e-commerce, garantindo escalabilidade, resiliência e boa manutenção. Busca-se relatar a experiência prática dessa implementação, destacando os principais desafios e as soluções adotadas.
 
 \section{Objetivos Gerais e Específicos}
 
@@ -30,7 +29,7 @@ Para atingir o objetivo geral, foram definidos os seguintes objetivos específic
     \item Revisar a literatura e as boas práticas relacionadas a arquiteturas de microsserviços, identificando padrões e abordagens adequadas para sistemas de e-commerce;
     \item Modelar a arquitetura de um backend baseado em microsserviços, especificando a comunicação entre os serviços, as responsabilidades de cada módulo e as tecnologias envolvidas;
     \item Implementar um protótipo funcional da arquitetura proposta, contemplando serviços essenciais de um e-commerce, como catálogo de produtos, carrinho, pedidos e usuários;
-    \item Validar a solução por meio de testes de desempenho, escalabilidade e resiliência, avaliando sua adequação frente aos objetivos estabelecidos;
+    \item Validar a solução por meio de testes funcionais e de integração, verificando o correto funcionamento dos serviços e da comunicação entre eles, bem como a aderência às boas práticas estudadas;
     \item Refletir sobre os desafios, limitações e aprendizados obtidos durante o processo, de forma a gerar insights que possam auxiliar desenvolvedores e pesquisadores interessados no tema.
 \end{itemize}
 

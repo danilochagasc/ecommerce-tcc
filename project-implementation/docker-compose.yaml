@@ -1,6 +1,29 @@
 version: "3.9"
 
 services:
+  # ==================== API GATEWAY ====================
+  gateway-app:
+    build: ./gateway
+    container_name: ecommerce-gateway-app
+    environment:
+      TZ: America/Sao_Paulo
+      JWT_SECRET: "${JWT_SECRET:change_this_to_a_long_secret_key_very_secure}"
+      ACCOUNT_BASE_URL: http://account-app:8080
+      CHECKOUT_BASE_URL: http://checkout-app:8080
+      STOCK_BASE_URL: http://stock-app:8080
+      ORDER_BASE_URL: http://order-app:8080
+      PAYMENT_BASE_URL: http://payment-app:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - account-app
+      - checkout-app
+      - stock-app
+      - order-app
+      - payment-app
+    networks:
+      - ecommerce-network
+
   # ==================== ACCOUNT SERVICE ====================
   account-app:
     build: ./account
@@ -10,8 +33,9 @@ services:
       SPRING_R2DBC_URL: r2dbc:postgresql://account-postgres:5432/accountdb
       SPRING_R2DBC_USERNAME: postgres
       SPRING_R2DBC_PASSWORD: postgres
-    ports:
-      - "8081:8080"
+      JWT_SECRET: "${JWT_SECRET:change_this_to_a_long_secret_key_very_secure}"
+    expose:
+      - "8080"
     depends_on:
       - account-flyway
     networks:
@@ -54,8 +78,8 @@ services:
       SPRING_DATA_REDIS_HOST: checkout-redis
       SPRING_DATA_REDIS_PORT: 6379
       STOCK_BASE_URL: http://stock-app:8080
-    ports:
-      - "8082:8080"
+    expose:
+      - "8080"
     depends_on:
       - checkout-redis
       - stock-app
@@ -84,8 +108,8 @@ services:
       SPRING_R2DBC_URL: r2dbc:postgresql://stock-postgres:5432/stockdb
       SPRING_R2DBC_USERNAME: postgres
       SPRING_R2DBC_PASSWORD: postgres
-    ports:
-      - "8083:8080"
+    expose:
+      - "8080"
     depends_on:
       - stock-flyway
       - localstack
@@ -146,8 +170,8 @@ services:
       AWS_S3_ENDPOINT_OVERRIDE_URL: http://localstack:4566
       PAYMENT_BASE_URL: http://payment-app:8080
       ACCOUNT_BASE_URL: http://account-app:8080
-    ports:
-      - "8084:8080"
+    expose:
+      - "8080"
     depends_on:
       - order-flyway
       - localstack
@@ -194,8 +218,8 @@ services:
       SPRING_R2DBC_USERNAME: postgres
       SPRING_R2DBC_PASSWORD: postgres
       AWS_S3_ENDPOINT_OVERRIDE_URL: http://localstack:4566
-    ports:
-      - "8085:8080"
+    expose:
+      - "8080"
     depends_on:
       - payment-flyway
       - localstack

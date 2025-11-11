@@ -4,13 +4,21 @@ Este é um projeto de e-commerce desenvolvido como Trabalho de Conclusão de Cur
 
 ## 📋 Arquitetura
 
-O projeto é composto por cinco microsserviços independentes desenvolvidos com **Spring Boot 3.5.5** e **Kotlin 2.0.21**, seguindo os princípios de **Domain-Driven Design (DDD)** e **Arquitetura Hexagonal**:
+O projeto é composto por um **API Gateway** e cinco microsserviços independentes desenvolvidos com **Spring Boot 3.5.5** e **Kotlin 2.0.21**, seguindo os princípios de **Domain-Driven Design (DDD)** e **Arquitetura Hexagonal**:
 
-- **Account Service** (Porta 8081) - Gerenciamento de usuários e autenticação JWT
-- **Checkout Service** (Porta 8082) - Processamento de carrinho e cupons
-- **Stock Service** (Porta 8083) - Gerenciamento de produtos e categorias
-- **Order Service** (Porta 8084) - Gerenciamento de pedidos
-- **Payment Service** (Porta 8085) - Processamento de pagamentos
+### API Gateway
+
+- **Gateway Service** (Porta 8080) - Ponto de entrada único com autenticação e autorização centralizadas
+
+### Microserviços
+
+- **Account Service** (Porta interna 8080) - Gerenciamento de usuários e geração de JWT
+- **Checkout Service** (Porta interna 8080) - Processamento de carrinho e cupons
+- **Stock Service** (Porta interna 8080) - Gerenciamento de produtos e categorias
+- **Order Service** (Porta interna 8080) - Gerenciamento de pedidos
+- **Payment Service** (Porta interna 8080) - Processamento de pagamentos
+
+> **Nota**: Todos os microserviços são acessíveis **apenas através do Gateway** na porta 8080. Eles não são expostos diretamente para o exterior.
 
 ### Stack Tecnológica Utilizada
 
@@ -109,15 +117,37 @@ docker-compose down -v --remove-orphans
 
 ## 🌐 Endpoints dos Serviços
 
-| Serviço    | URL                   | Descrição                   |
-| ---------- | --------------------- | --------------------------- |
-| Account    | http://localhost:8081 | Gerenciamento de usuários   |
-| Checkout   | http://localhost:8082 | Carrinho e cupons           |
-| Stock      | http://localhost:8083 | Produtos e categorias       |
-| Order      | http://localhost:8084 | Gerenciamento de pedidos    |
-| Payment    | http://localhost:8085 | Processamento de pagamentos |
-| Grafana    | http://localhost:3000 | Dashboard de monitoramento  |
-| Prometheus | http://localhost:9090 | Métricas dos serviços       |
+| Serviço     | URL                       | Descrição                                |
+| ----------- | ------------------------- | ---------------------------------------- |
+| **Gateway** | **http://localhost:8080** | **Ponto de entrada único (API Gateway)** |
+| Grafana     | http://localhost:3000     | Dashboard de monitoramento               |
+| Prometheus  | http://localhost:9090     | Métricas dos serviços                    |
+
+### Rotas Disponíveis no Gateway
+
+#### Rotas Públicas (Sem Autenticação)
+
+- `POST /auth/login` - Login de usuário
+- `POST /user/register` - Registro de usuário
+- `GET /product/**` - Navegação de produtos
+- `GET /category/**` - Navegação de categorias
+
+#### Rotas de Usuário (Requer Autenticação)
+
+- `/user/**` - Gerenciamento de perfil
+- `/address/**` - Gerenciamento de endereços
+- `/cart/**` - Operações de carrinho
+- `/order/**` - Gerenciamento de pedidos
+- `/coupon/**` - Visualização e aplicação de cupons
+
+#### Rotas de Admin (Requer Role ADMIN)
+
+- `GET /user` - Listar todos os usuários
+- `POST/PUT/DELETE /product/**` - Gerenciamento de produtos
+- `POST/PUT/DELETE /category/**` - Gerenciamento de categorias
+- `POST/PUT/DELETE /coupon/**` - Gerenciamento de cupons
+
+> **Importante**: Todos os microserviços devem ser acessados através do Gateway. Eles não estão expostos diretamente.
 
 ## 🗄️ Bancos de Dados
 
@@ -131,12 +161,27 @@ docker-compose down -v --remove-orphans
 
 ## 🔗 Comunicação Entre Serviços
 
+### Fluxo de Requisição
+
+```
+Cliente → Gateway (Porta 8080) → Valida JWT → Verifica Autorização → Roteia para Microserviço
+```
+
+### Comunicação Interna
+
 Os serviços se comunicam através da rede compartilhada `ecommerce-network` via HTTP (WebClient reativo):
 
+- **Gateway** → **Todos os Serviços**: Roteamento e autenticação
 - **Checkout Service** → **Stock Service**: Validação de produtos e estoque
 - **Order Service** → **Account Service**: Validação de usuários
 - **Order Service** → **Payment Service**: Processamento de pagamentos
 - **Order Service** → **Stock Service**: Decremento de estoque após confirmação de pagamento
+
+### Segurança
+
+- **JWT Validation**: Gateway valida todos os tokens JWT
+- **Role-Based Access Control**: Gateway aplica regras de autorização baseadas em roles
+- **Service Isolation**: Microserviços não são acessíveis diretamente do exterior
 
 ## 🗃️ Migrations de Banco de Dados
 
@@ -193,6 +238,11 @@ docker exec ecommerce-payment-flyway flyway info
 
 ```
 project-implementation/
+├── gateway/                 # API Gateway
+│   ├── README.md           # Documentação do gateway
+│   ├── docker-compose.yaml
+│   ├── Dockerfile
+│   └── src/
 ├── account/                 # Account Service
 │   ├── README.md           # Documentação do serviço
 │   ├── docker-compose.yaml
@@ -232,58 +282,12 @@ project-implementation/
 
 Cada serviço possui seu próprio README com informações detalhadas:
 
+- `gateway/README.md` - **API Gateway**
 - `account/README.md` - Account Service
 - `checkout/README.md` - Checkout Service
 - `stock/README.md` - Stock Service
 - `order/README.md` - Order Service
 - `payment/README.md` - Payment Service
-
-## 🛠️ Desenvolvimento
-
-### Executar Serviços Individualmente
-
-Cada serviço pode ser executado independentemente:
-
-```bash
-# Account Service
-cd account
-docker-compose up -d
-
-# Checkout Service
-cd checkout
-docker-compose up -d
-
-# Stock Service
-cd stock
-docker-compose up -d
-```
-
-### Logs de Desenvolvimento
-
-```bash
-# Logs de todos os serviços
-docker-compose logs -f
-
-# Logs de um serviço específico
-docker-compose logs -f account-app
-docker-compose logs -f checkout-app
-docker-compose logs -f stock-app
-docker-compose logs -f order-app
-docker-compose logs -f payment-app
-```
-
-## 🧹 Limpeza
-
-Para limpar completamente o ambiente:
-
-```bash
-# Usando script
-./scripts/ecommerce.sh clean
-
-# Ou manualmente
-docker-compose down -v --remove-orphans
-docker system prune -f
-```
 
 ## 📝 Notas Importantes
 
